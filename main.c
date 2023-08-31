@@ -5,6 +5,10 @@
 // if we don't use srand(),the same number will be generated every time
 #include <time.h>
 #include "createElements.h"
+int MAX_WIDTH = 10;
+int MIN_WIDTH = 4;
+int MAX_HEIGHT = 10;
+int MIN_HEIGHT = 4;
 
 int main() {
   createElements();
@@ -12,16 +16,14 @@ int main() {
   srand( time( NULL ) );
   // we create an array of elements to get a random one on the display
   struct Element elementsList[] = {ground, tree, leaf, rock, herb, water};
-  int randomWidth = (rand() % 10) + 4;
-  int randomHeight = (rand() % 10) + 4;
+  int randomWidth = (rand() % MAX_WIDTH) + MIN_WIDTH;
+  int randomHeight = (rand() % MAX_HEIGHT) + MIN_HEIGHT;
   printf("Width: %d, Height: %d \n", randomWidth, randomHeight);
-  for (int i = 0; i < randomHeight; i++) {
-    for (int j = 0; j < randomWidth; j++) {
+  for (int height = 0; height < randomHeight; height++) {
+    for (int width = 0; width < randomWidth; width++) {
+      // sizeof elementsList / sizeof elementsList[0] is used to get the size of the array, because we can't get it directly
       printf("%c", elementsList[(rand() % (sizeof elementsList / sizeof elementsList[0]))].symbol);
-      //DEBUG to display degree only
-      // printf("%d", elementsList[(rand() % (sizeof elementsList / sizeof elementsList[0]))].degree);
     }
-
     printf("\n");
   }
   return 0;
