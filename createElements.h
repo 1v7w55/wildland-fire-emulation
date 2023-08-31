@@ -62,14 +62,3 @@ void createExtinctAshElement() {
   extinctAsh.degree = 0;
   extinctAsh.state = 0;
 }
-
-void createElements() {
-  createGroundElement();
-  createTreeElement();
-  createLeafElement();
-  createHerbElement();
-  createRockElement();
-  createWaterElement();
-  createAshElement();
-  createExtinctAshElement();
-}

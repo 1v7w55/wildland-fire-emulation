@@ -1,0 +1,4 @@
+int MAX_WIDTH = 10;
+int MIN_WIDTH = 4;
+int MAX_HEIGHT = 10;
+int MIN_HEIGHT = 4;
