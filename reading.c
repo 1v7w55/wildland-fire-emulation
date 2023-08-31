@@ -21,7 +21,8 @@ int main() {
         scanf("%s", line);
         *(tab + i) = line;
     }
-    printf("fin");
+    
+    printf("\n");
     for(int i = 0;i < height;i++) {
         for (int j = 0;j < width;j++){
             //printf("tableau[%d][%d] = %c\n", i, j, *(*(tab + i) + j));
