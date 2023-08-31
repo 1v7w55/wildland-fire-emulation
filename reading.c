@@ -10,7 +10,7 @@ int main() {
         return -1;
     }
     
-    for(int i = 0;i < height;i++) {
+    for(int ligne = 0;ligne < height;ligne++) {
         char* line = NULL;
         line = (char *) malloc((width+1) * sizeof(char*));
         if(line == NULL) {
@@ -19,14 +19,14 @@ int main() {
         }
 
         scanf("%s", line);
-        *(tab + i) = line;
+        *(tab + ligne) = line;
     }
     
     printf("\n");
-    for(int i = 0;i < height;i++) {
-        for (int j = 0;j < width;j++){
-            //printf("tableau[%d][%d] = %c\n", i, j, *(*(tab + i) + j));
-            printf("%c", *(*(tab + i) + j));
+    for(int ligne = 0;ligne < height;ligne++) {
+        for (int colonne = 0;colonne < width;colonne++){
+            //printf("tableau[%d][%d] = %c\n", i, colonne, *(*(tab + i) + colonne));
+            printf("%c", *(*(tab + ligne) + colonne));
         }
 
         printf("\n");
@@ -34,6 +34,3 @@ int main() {
 
     return 0;
 }
-
-
-
