@@ -12,7 +12,7 @@ struct Element {
   // State will be equals to 1 if it's on fire, 0 otherwise
   unsigned short state;
   // Initialize all types that may be on our array
-} ground, tree, leaf, rock, water, ash, extinctAsh;
+} ground, tree, leaf, rock, water, herb, ash, extinctAsh;
 
 void createGroundElement() {
   ground.type = 'F';
@@ -30,8 +30,8 @@ void createTreeElement() {
 
 void createLeafElement() {
   leaf.type = 'L';
-  leaf.symbol = '_';
-  leaf.degree = 0;
+  leaf.symbol = ' ';
+  leaf.degree = 2;
   leaf.state = 0;
 }
 
@@ -40,6 +40,13 @@ void createRockElement() {
   rock.symbol = '#';
   rock.degree = 5;
   rock.state = 0;
+}
+
+void createHerbElement() {
+  herb.type = 'H';
+  herb.symbol = 'x';
+  herb.degree = 3;
+  herb.state = 0;
 }
 
 void createWaterElement() {
@@ -67,6 +74,7 @@ void createElements() {
   createGroundElement();
   createTreeElement();
   createLeafElement();
+  createHerbElement();
   createRockElement();
   createWaterElement();
   createAshElement();
@@ -78,15 +86,17 @@ int main() {
   // srand is used to generate random numbers, we need to set a seed to obtains a different number at each execution
   srand( time( NULL ) );
   // we create an array of elements to get a random one on the display
-  struct Element elementsList[] = {ground, tree, leaf, rock, water};
+  struct Element elementsList[] = {ground, tree, leaf, rock, herb, water};
   int randomWidth = (rand() % 10) + 4;
   int randomHeight = (rand() % 10) + 4;
-  printf("Width: %d\n", randomWidth);
-  printf("Height: %d\n", randomHeight);
+  printf("Width: %d, Height: %d \n", randomWidth, randomHeight);
   for (int i = 0; i < randomHeight; i++) {
     for (int j = 0; j < randomWidth; j++) {
-      printf("%c", elementsList[(rand() % 5)].symbol);
+      printf("%c", elementsList[(rand() % (sizeof elementsList / sizeof elementsList[0]))].symbol);
+      //DEBUG to display degree only
+      // printf("%d", elementsList[(rand() % (sizeof elementsList / sizeof elementsList[0]))].degree);
     }
+
     printf("\n");
   }
   return 0;
