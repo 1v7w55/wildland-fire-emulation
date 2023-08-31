@@ -8,7 +8,6 @@ int readingInputsString() {
     char** tab = NULL;
     //Allocate the necessary memory to it
     tab = (char **) malloc(height * sizeof(char*));
-    
     //Test if memory has been assigned
     if(tab == NULL) {
         return -1;
