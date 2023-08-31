@@ -3,15 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define MAXWIDTH 10
-#define MINWIDTH 4
 
-struct Element {
-  char type;
-  char symbol;
-  unsigned short degree;
-  unsigned short state;
-};
+#include "mode-random.h"
 
 static struct Element elements[] = {
   {'F', '+', 0, 0},
@@ -23,11 +16,16 @@ static struct Element elements[] = {
   {'A', '-', 1, 0},
 };
 
+
+/**
+ * This program generates a random width and height for an output,
+ * and then prints a random symbol from an array for each row and column of the output.
+ */
 int main() {
   srand(time(NULL)); 
 
-  int randomWidth = (rand() % MAXWIDTH) + MINWIDTH;
-  int randomHeight = (rand() % MAXWIDTH) + MINWIDTH;
+  int randomWidth = (rand() % 10) + 4;
+  int randomHeight = (rand() % 10) + 4;
 
   printf("Width: %d, Height: %d\n", randomWidth, randomHeight);
 
