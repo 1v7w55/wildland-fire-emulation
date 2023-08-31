@@ -79,13 +79,13 @@ int main() {
   srand( time( NULL ) );
   // we create an array of elements to get a random one on the display
   struct Element elementsList[] = {ground, tree, leaf, rock, water};
-  int randomWidth = (rand() % 10) + 2;
+  int randomWidth = (rand() % 10) + 4;
   printf("Width: %dx%d\n", randomWidth, randomWidth);
   for (int i = 0; i < randomWidth; i++) {
     for (int j = 0; j < randomWidth; j++) {
-      printf("%c ", elementsList[(rand() % 7)].symbol);
+      printf("%c", elementsList[(rand() % 5)].symbol);
     }
-    printf("\n ");
+    printf("\n");
   }
   return 0;
 }
