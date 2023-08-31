@@ -30,7 +30,7 @@ void createTreeElement() {
 
 void createLeafElement() {
   leaf.type = 'L';
-  leaf.symbol = ' ';
+  leaf.symbol = '_';
   leaf.degree = 0;
   leaf.state = 0;
 }
@@ -80,8 +80,10 @@ int main() {
   // we create an array of elements to get a random one on the display
   struct Element elementsList[] = {ground, tree, leaf, rock, water};
   int randomWidth = (rand() % 10) + 4;
-  printf("Width: %dx%d\n", randomWidth, randomWidth);
-  for (int i = 0; i < randomWidth; i++) {
+  int randomHeight = (rand() % 10) + 4;
+  printf("Width: %d\n", randomWidth);
+  printf("Height: %d\n", randomHeight);
+  for (int i = 0; i < randomHeight; i++) {
     for (int j = 0; j < randomWidth; j++) {
       printf("%c", elementsList[(rand() % 5)].symbol);
     }
