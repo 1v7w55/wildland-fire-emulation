@@ -18,9 +18,7 @@ void displayMatrix(Element **matrix, int randomWidth, int randomHeight, short st
         matrix[i][j].degree -= 1;
       } else if (matrix[i][j].degree == 1) {
         matrix[i][j] = ash;
-      } else if (
-        matrix[i][j].degree == 0
-      ) else {
+      } else if (matrix[i][j].degree == 0) {
         matrix[i][j] = extinctAsh;
       }
       printf("%d", matrix[i][j].degree);
