@@ -6,14 +6,24 @@
 #include "./config/global.h"
 #include "./bean/element.h"
 
+// Initialize values for individual elements
 static struct Element elements[] = {
+  // Floor
   {'F', '+', 0, 0},
+  // Tree
   {'T', '*', 4, 0},
+  // Leaf
   {'L', ' ', 2, 0},
+  // Rock
   {'R', '#', 5, 0},
+  // Herb
   {'H', 'x', 3, 0},
+  // Water
   {'W', '/', 0, 0},
+  // Ash
   {'A', '-', 1, 0},
+  // Extinct ash
+  {'E', '@', 0, 0}
 };
 
 /**
