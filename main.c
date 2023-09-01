@@ -1,3 +1,9 @@
+/**
+ * @file main.c
+ * @brief project lead
+ * @version 1.0 01/09/2023
+ * Projet C - ESIEA
+*/
 #include <stddef.h>
 #include <time.h>
 #include <stdlib.h>
