@@ -1,4 +1,4 @@
-#include "../bean/element.h"
+#include "../bean/typeElement.h"
 
 // Creation of an enum for faster access to random generation
 typedef enum {
