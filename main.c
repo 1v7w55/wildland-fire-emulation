@@ -2,10 +2,9 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-#include "./display/random/random_display.h"
+#include "menu/heading_menu.h"
 
 int main() {
-  randomDisplay();
-  return 0;
+    menu();
+    return 0;
 }
