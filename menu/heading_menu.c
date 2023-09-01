@@ -1,3 +1,9 @@
+/**
+ * @file heading_menu.c
+ * @brief The set of functions used for the menu
+ * @version 1.0 01/09/2023
+ * Projet C - ESIEA
+*/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -9,13 +15,8 @@
 //Allows you to display the menu before the start of the game
 void menu() {
     int gameMode;
-    char firstname[100];
-    printf("Comment t'appelles-tu ? \n");
-    fgets(firstname, 100, stdin);
-    firstname[strcspn(firstname, "\n")] = '\0';
-    printf("Salut %s, enchante de te rencontrer ! \n", firstname);
     printf("Bienvenue dans l'emulation d'incendie en milieu forestier\n");
-    while (1) {
+    do {
         printf("Veuillez choisir le mode de jeu que vous souhaitez ? \n");
         printf("\t1 - Charger une carte\n");
         printf("\t2 - Generer aleatoirement une carte\n");
@@ -34,7 +35,7 @@ void menu() {
             default:
                 printf("Choix invalide. Veuillez choisir un mode de jeu valide.\n");
         }
-    }
+    } while (1);
 }
 
 //Allows you to leave the game with player confirmation
