@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "createElements.h"
+#include "./bean/typeElement.h"
 
 int createElementArray(){
     int height, width;
@@ -38,6 +38,6 @@ int createElementArray(){
         free(reader);
     }
 
-    afficherGrille(tab,height,width);
+    //afficherGrille(tab,height,width);
     return 0;
 }
