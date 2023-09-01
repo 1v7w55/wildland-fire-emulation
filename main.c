@@ -1,38 +1,41 @@
-#include <stdio.h>
-// use to add random numbers (rand())
-#include <stdlib.h>     
-// At each execution, the seed is set to a value obtained from the system clock,
-// if we don't use srand(),the same number will be generated every time
+#include <stddef.h>
 #include <time.h>
-#include "createElements.h"
-#include "config.h"
+#include <stdlib.h>
+#include <stdio.h>
 
-void createElements() {
-  createGroundElement();
-  createTreeElement();
-  createLeafElement();
-  createHerbElement();
-  createRockElement();
-  createWaterElement();
-  createAshElement();
-  createExtinctAshElement();
-}
+#include "./config/global.h"
+#include "./bean/element.h"
+
+static struct Element elements[] = {
+  {'F', '+', 0, 0},
+  {'T', '*', 4, 0},
+  {'L', ' ', 2, 0},
+  {'R', '#', 5, 0},
+  {'H', 'x', 3, 0},
+  {'W', '/', 0, 0},
+  {'A', '-', 1, 0},
+};
+
+/**
+ * This program generates a random width and height for an output,
+ * and then prints a random symbol from an array for each row and column of the output.
+ */
 
 int main() {
-  createElements();
-  // srand is used to generate random numbers, we need to set a seed to obtains a different number at each execution
-  srand(time(NULL));
-  // we create an array of elements to get a random one on the display
-  struct Element elementsList[] = {ground, tree, leaf, rock, herb, water};
+  srand(time(NULL)); 
+
   int randomWidth = (rand() % MAX_WIDTH) + MIN_WIDTH;
-  int randomHeight = (rand() % MAX_HEIGHT) + MIN_HEIGHT;
-  printf("Width: %d, Height: %d \n", randomWidth, randomHeight);
-  for (int height = 0; height < randomHeight; height++) {
-    for (int width = 0; width < randomWidth; width++) {
-      // (sizeof elementsList / sizeof elementsList[0]) is used to get the size of the array, because we can't get it directly
-      printf("%d", elementsList[(rand() % (sizeof elementsList / sizeof elementsList[0]))].degree);
+  int randomHeight = (rand() % MAX_WIDTH) + MIN_WIDTH;
+
+  printf("Width: %d, Height: %d\n", randomWidth, randomHeight);
+
+  for (int i = 0; i < randomHeight; i++) {
+    for (int j = 0; j < randomWidth; j++) {
+      struct Element element = elements[rand() % (sizeof elements / sizeof elements[0])];
+      printf("%c", element.symbol);
     }
     printf("\n");
   }
+
   return 0;
 }
