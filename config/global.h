@@ -6,3 +6,7 @@ const unsigned short MIN_HEIGHT = 4;
 
 // Define spacer
 const char SPACER[] = "  ";
+
+// Define randomX & randomY for the fire
+unsigned int randomX;
+unsigned int randomY;
