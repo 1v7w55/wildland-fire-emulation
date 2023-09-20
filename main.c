@@ -4,8 +4,9 @@
 #include <stdio.h>
 
 #include "./display/random/random_display.h"
+#include "./utils/manual_input.h"
 
 int main() {
-  randomDisplay();
+  createElementArray();
   return 0;
 }
