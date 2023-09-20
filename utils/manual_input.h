@@ -80,6 +80,7 @@ int createElementArray(){
         free(reader);
     }
 
-    display_grid_and_degree(tab,height,width);
+    //display_grid_and_degree(tab,height,width);
+    display_grid_arg2(tab,height,width,'s','t');
     return 0;
 }
