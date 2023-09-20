@@ -8,7 +8,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "menu/heading_menu.h"
+#include "menu/heading_menu.c"
 
 int main() {
     menu();
