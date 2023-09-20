@@ -7,6 +7,6 @@
 #include "./utils/manual_input.h"
 
 int main() {
-  createElementArray();
+  menu();
   return 0;
 }

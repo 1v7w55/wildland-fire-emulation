@@ -20,7 +20,7 @@ int display_grid( Element **tab,int height,int width,char type1){
         default:
             printf("Il y a une erreur");
             return -1;
-    }
+        }
     }
     return 0;
 }
@@ -34,6 +34,5 @@ int display_grid_arg2( Element **tab,int height,int width,char type1,char type2)
         }
         display_grid(tab,ligne,width,type2);
         printf("\n");
-
     }
 }
