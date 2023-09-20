@@ -8,9 +8,11 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "menu/heading_menu.h"
+
+#include "./display/random/random_display.h"
+#include "./utils/manual_input.h"
 
 int main() {
-    menu();
-    return 0;
+  menu();
+  return 0;
 }
