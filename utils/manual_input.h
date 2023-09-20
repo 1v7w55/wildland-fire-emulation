@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../bean/typeElement.h"
+#include "../bean/type_element.h"
 #include "./display_grid.h"
 
 Element detectionElement(char symbol){

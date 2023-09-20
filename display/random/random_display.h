@@ -1,5 +1,5 @@
 #include "../../config/global.h"
-#include "../../config/error.h"
+#include "../../config/error_message.h"
 #include "../../bean/type_element.h"
 #include "../../bean/type_point.h"
 #include "../../enum/element.h"
@@ -22,7 +22,6 @@ void displayMatrix(Element** matrix, size_t width, size_t height) {
     for (size_t j = 0; j < width; j++) {
       printf("%c", matrix[i][j].symbol);
     }
-
     // DEBUG ONLY
     printf("%s", SPACER);
     for (size_t j = 0; j < width; j++) {
@@ -35,7 +34,6 @@ void displayMatrix(Element** matrix, size_t width, size_t height) {
     // END DEBUG
     printf("\n");
   }
-  
   // DEBUG ONLY
   printf("Etape : %ld\n", step);
   step++;
@@ -93,27 +91,21 @@ int randomDisplay() {
   size_t randomWidth = (rand() % (MAX_WIDTH - MIN_WIDTH + 1)) + MIN_WIDTH;
   size_t randomHeight = (rand() % (MAX_WIDTH - MIN_WIDTH + 1)) + MIN_WIDTH;
   Point* points = (Point*)malloc(sizeof(Point) * randomHeight * randomWidth);
-
   if (!points) {
     fprintf(stderr, ERROR_MEMORY);
     return 1;
   }
-
   Element** forestMatrix = (Element**)malloc(randomHeight * sizeof(Element*));
-
   if (!forestMatrix) {
     fprintf(stderr, ERROR_MEMORY);
     free(points);
     return 1;
   }
-
   initializeMatrix(forestMatrix, randomWidth, randomHeight);
-
   // We don't want to start the fire on a element with degree 0, so we loop until we find one
   do {
       getRandomPosition(&randomX, &randomY, randomWidth, randomHeight);
   } while (forestMatrix[randomY][randomX].degree == 0);
-
   // TODO: We need to display this first time to see the first step of the fire, change to only call one function
   displayMatrix(forestMatrix, randomWidth, randomHeight);
   // we set the fire on the random position
@@ -121,13 +113,11 @@ int randomDisplay() {
   // TODO: Same as above, we need to display this first time to see the first step of the fire
   displayMatrix(forestMatrix, randomWidth, randomHeight);
   setFire(randomX, randomY, randomWidth, randomHeight, forestMatrix, points, &pointIndex);
-  
   // For each point in the array, we set the fire on the point and we add the new points to the array
   for (size_t i = 0; i < pointIndex; i++) {
     displayMatrix(forestMatrix, randomWidth, randomHeight);
     setFire(points[i].x, points[i].y, randomWidth, randomHeight, forestMatrix, points, &pointIndex);
   }
-
   free(points);
   freeMatrix(forestMatrix, randomHeight);
   return 0;
