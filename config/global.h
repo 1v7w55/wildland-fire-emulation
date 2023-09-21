@@ -9,4 +9,12 @@ size_t pointIndex, step;
 unsigned short randomX, randomY;
 
 // Define spacer
-const char SPACER[] = "  ";
+const char SPACER[] = "\t";
+
+// Define color
+#define COLOR_RED "\033[1;31m"
+#define COLOR_ORANGE "\033[1;33m"
+#define COLOR_YELLOW "\033[1;33m"
+#define COLOR_GREEN "\033[1;32m"
+#define COLOR_WHITE "\033[1;30m"
+#define COLOR_RESET "\033[0m"

@@ -17,10 +17,29 @@ void freeMatrix(Element** matrix, size_t height) {
   free(matrix);
 }
 
+void getColor(int degree) {
+  switch(degree) {
+    case 0:
+      printf("%s", COLOR_WHITE);
+      return;
+    case 1:
+      printf("%s", COLOR_RED);
+      return;
+    case 2:
+      printf("%s", COLOR_YELLOW);
+      return;
+    default:
+      printf("%s", COLOR_GREEN);
+      return;
+  } 
+}
+
 void displayMatrix(Element** matrix, size_t width, size_t height) {
   for (size_t i = 0; i < height; i++) {
     for (size_t j = 0; j < width; j++) {
+      getColor(matrix[i][j].degree);
       printf("%c", matrix[i][j].symbol);
+      printf("%s", COLOR_RESET);
     }
     // DEBUG ONLY
     printf("%s", SPACER);
@@ -117,6 +136,12 @@ int randomDisplay() {
   for (size_t i = 0; i < pointIndex; i++) {
     displayMatrix(forestMatrix, randomWidth, randomHeight);
     setFire(points[i].x, points[i].y, randomWidth, randomHeight, forestMatrix, points, &pointIndex);
+    // Browse all points and removing 1 degree
+    for (size_t j = 0; j < pointIndex; j++) {
+      if (forestMatrix[points[j].y][points[j].x].degree > 0) {
+        forestMatrix[points[j].y][points[j].x].degree--;
+      }
+    }
   }
   free(points);
   freeMatrix(forestMatrix, randomHeight);
