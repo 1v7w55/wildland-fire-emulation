@@ -17,27 +17,20 @@ void freeMatrix(Element** matrix, size_t height) {
   free(matrix);
 }
 
-void getColor(int degree) {
-  switch(degree) {
-    case 0:
-      printf("%s", COLOR_WHITE);
-      return;
-    case 1:
-      printf("%s", COLOR_RED);
-      return;
-    case 2:
-      printf("%s", COLOR_YELLOW);
-      return;
-    default:
-      printf("%s", COLOR_GREEN);
-      return;
-  } 
+void getColor(Element element) {
+  if (element.state == 0 && element.degree > 0) {
+    printf("%s", COLOR_GREEN);
+    return;
+  } else  if(element.state == 1) {
+    printf("%s", COLOR_RED);
+    return;
+  }
 }
 
 void displayMatrix(Element** matrix, size_t width, size_t height) {
   for (size_t i = 0; i < height; i++) {
     for (size_t j = 0; j < width; j++) {
-      getColor(matrix[i][j].degree);
+      getColor(matrix[i][j]);
       printf("%c", matrix[i][j].symbol);
       printf("%s", COLOR_RESET);
     }
