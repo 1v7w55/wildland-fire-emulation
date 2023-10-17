@@ -1,74 +1,57 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "../bean/type_element.h"
 #include "./display_grid.h"
-
-Element detectionElement(char symbol){
-    switch ((char) symbol) {
-    case '+':
-        return ground;
-    case '*':
-        return tree;
-    case ' ':
-        return leaf;
-    case '#':
-        return rock;
-    case 'x':
-        return herb;
-    case '/':
-        return water;
-    case '-':
-        return ash;
-    case '@':
-        return extinctAsh;
-    default:
-        printf("Le caractère %c est interdis.",symbol);
-        //In case the user inputs a char not possible
-        Element error = { '!', '!', 0, 0 };
-        return error;
-    }
-}
+#include "./detect_element.h"
 
 int createElementArray(){
-    int height, width;
-    scanf("%d %d",&height,&width);
-    //Initialize a pointer pointer
-    Element** tab = NULL;
-    //Allocate the necessary memory to it
-    tab = ( Element **) malloc(height * sizeof( Element*));
-    if(tab == NULL) {
+  Element** forestMatrix = NULL;
+  scanf("%ld %ld",&gridHeight,&gridWidth);
+  //Initialize a pointer pointer
+  //Allocate the necessary memory to it
+  forestMatrix = ( Element **) malloc(gridHeight * sizeof( Element*));
+  if(forestMatrix == NULL) {
+    return -1;
+  }
+  for(int i = 0;i < gridHeight;i++) {
+    Element* line = NULL;
+    line = ( Element*) malloc((gridWidth) * sizeof( Element*));
+    if(line == NULL) {
+      free(forestMatrix);
+      return -2;
+    }
+    *(forestMatrix + i) = line;
+    char* reader = NULL;
+    reader = (char*) malloc((gridWidth + 1) * sizeof(char*));
+    //Add one to the gridWidth because of the last char of every string '\0'
+    if(reader == NULL) {
+      fprintf(stderr, ERROR_MEMORY);
+      free(forestMatrix);
+      return -3;
+    }
+    //fgets(reader, gridWidth, stdin);
+    scanf("%s", reader);
+    for (int colonne = 0;colonne < gridWidth;colonne++){
+      Element character = detectionElement(*(reader + colonne));
+      //check the error code
+      if (character.symbol != '!'){
+        forestMatrix[i][colonne] = character ;
+      }
+      else {
         return -1;
+      };
     }
-    for(int ligne = 0;ligne < height;ligne++) {
-         Element* line = NULL;
-        line = ( Element*) malloc((width) * sizeof( Element*));
-        if(line == NULL) {
-            free(tab);
-            return -2;
-        }
-        *(tab + ligne) = line;
-        char * reader = NULL;
-        reader = (char*) malloc((width + 1) * sizeof(char*));
-        //Add one to the width because of the last char of every string '\0'
-        if(reader == NULL) {
-            free(tab);
-            return -3;
-        }
-        //fgets(reader, width, stdin);
-        scanf("%s", reader);
-        for (int colonne = 0;colonne < width;colonne++){
-            Element character = detectionElement(*(reader + colonne));
-            //check the error code
-            if (character.symbol != '!'){
-                tab[ligne][colonne] = character ;
-            }
-            else {
-                return -1;
-            }
-        }
-        free(reader);
+    free(reader);
+  }
+  Point* points = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
+  setFire(0, 0, gridWidth, gridHeight, forestMatrix, points, &pointIndex);
+  displayMatrix(forestMatrix, gridWidth, gridHeight);
+  for (size_t i = 0; i < pointIndex; i++) {
+    displayMatrix(forestMatrix, gridWidth, gridHeight);
+    setFire(points[i].x, points[i].y, gridWidth, gridHeight, forestMatrix, points, &pointIndex);
+    for (size_t j = 0; j < pointIndex; j++) {
+      if (forestMatrix[points[j].y][points[j].x].degree > 0) {
+          forestMatrix[points[j].y][points[j].x].degree--;
+      }
     }
-    //display_grid_and_degree(tab,height,width);
-    display_grid_arg2(tab,height,width,'s','t');
-    return 0;
+  }
+  return 0;
 }
