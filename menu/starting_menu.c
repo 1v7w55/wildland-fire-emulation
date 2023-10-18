@@ -14,6 +14,7 @@ void menu() {
     switch (gameMode) {
       case 1:
         createElementArray();
+        return;
       case 2:
         randomDisplay();
         return;
@@ -23,6 +24,7 @@ void menu() {
       default:
         printf("Choix invalide. Veuillez choisir un mode de jeu valide.\n");
   }
+  leave();
   } while (1);
 }
 
