@@ -7,7 +7,6 @@
 #include "./utils/manual_input.h"
 
 int main() {
-  //createElementArray();
-  readFile();
+  menu();
   return 0;
 }
