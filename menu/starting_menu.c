@@ -13,7 +13,7 @@ void menu() {
     scanf("%d", &gameMode);
     switch (gameMode) {
       case 1:
-        createElementArray();
+        chooseOption();
         return;
       case 2:
         randomDisplay();

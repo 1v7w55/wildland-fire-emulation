@@ -1,15 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../bean/typeElement.h"
+#include "../bean/type_element.h"
 #include "./display_grid.h"
 
-void freeMatrix(Element** matrix, size_t height) {
-  for (size_t i = 0; i < height; i++) {
-    free(matrix[i]);
-  }
-  free(matrix);
-}
 
 Element detectionElement(char symbol){
     switch ((char) symbol)
@@ -103,9 +97,11 @@ int readFile(){
     char chemin[150] = "./saves/";
     FILE *userInupts ;
     
+    printf("Vous pouvez ajouter votre fichier de save au dossier save du programme. Si cela n'et pas déja fait.\n");
+
     while (check == 0)
     {
-        printf("Entrez le nom de vore fichier mis dans le dossier save (avec l'extention): ");
+        printf("Entrez le nom de votre fichier mis dans le dossier save (avec l'extention): ");
         char nameFile[100];
         scanf("%s",nameFile);
         //strcat(chemin, nameFile);
@@ -185,4 +181,35 @@ int readFile(){
     //display_grid_arg2(tab, height, width, 'S','d');
 
     return 0;
+}
+
+
+void chooseOption(){
+
+        //createElementArray();
+        //readFile();
+
+    int option;
+    do {
+        printf("Veuillez choisir le mode d'input que vous souhaitez ? \n");
+        printf("\t1 - Charger une carte à partir d'un fichier\n");
+        printf("\t2 - Charger à partir du terminal\n");
+        //printf("\t3 - Retour au menu\n");
+        // Read user choice
+        scanf("%d", &option);
+        switch (option) {
+        case 1:
+            readFile();
+            return;
+        case 2:
+            createElementArray();
+            return;
+        case 3:
+            break;
+        default:
+            printf("Choix invalide. Veuillez choisir un mode de jeu valide.\n");
+    }
+    return;
+    } while (1);
+
 }
