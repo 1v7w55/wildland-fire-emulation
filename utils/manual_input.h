@@ -1,15 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../bean/typeElement.h"
+#include "../bean/type_element.h"
 #include "./display_grid.h"
-
-void freeMatrix(Element** matrix, size_t height) {
-  for (size_t i = 0; i < height; i++) {
-    free(matrix[i]);
-  }
-  free(matrix);
-}
 
 Element detectionElement(char symbol){
     switch ((char) symbol)
