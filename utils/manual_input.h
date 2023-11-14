@@ -31,7 +31,7 @@ Element detectionElement(char symbol){
     case '@':
         return extinctAsh;
     default:
-        printf("Le caractère '%c' '%d' est interdis.",symbol,symbol);
+        printf("Le caractère '%c' est interdis.",symbol);
 
         //In case the user inputs a char not possible
         Element error = { '!', '!', 0, 0 };
@@ -44,6 +44,7 @@ Element detectionElement(char symbol){
 int createElementArray(){
     int height, width;
     scanf("%d %d",&height,&width);
+    printf("\n");
     //Initialize a pointer pointer
     Element** tab = NULL;
     //Allocate the necessary memory to it
@@ -70,7 +71,11 @@ int createElementArray(){
         }
 
         //fgets(reader, width, stdin);
-        scanf("%s", reader);
+
+        scanf("%[^\n]", reader);
+        printf("1");
+        printf("%s",reader);
+        printf("1");
         for (int colonne = 0;colonne < width;colonne++){
             Element character = detectionElement(*(reader + colonne));
             //check the error code
@@ -87,25 +92,38 @@ int createElementArray(){
         free(reader);
     }
 
-    display_grid_arg2(tab,height,width,'S','d');
+    //display_grid_arg2(tab,height,width,'S','d');
     return 0;
 }
 
 
 int readFile(){
-    printf("Entrez le nom de vore fichier (avec l'extention): ");
-    char nameFile[100];
-    scanf("%s",nameFile);
-    char chemin[100] = "./saves/";
-    strcat(chemin, nameFile);
+
+    int check=0;
+    char chemin[150] = "./saves/";
+    FILE *userInupts ;
     
-    //On ouvre le fichier
-    FILE* userInupts = fopen(chemin,"r");
-    if (userInupts == NULL){
-        printf("Erreur lors de l'ouverture du fichier");
-        return -1;
+    while (check == 0)
+    {
+        printf("Entrez le nom de vore fichier mis dans le dossier save (avec l'extention): ");
+        char nameFile[100];
+        scanf("%s",nameFile);
+        //strcat(chemin, nameFile);
+        snprintf(chemin,sizeof(chemin),"./saves/%s",nameFile);
+        //On ouvre le fichier
+        userInupts = fopen(chemin,"r");
+        
+        if (userInupts == NULL){
+            check=0;
+            printf("Erreur lors de l'ouverture du fichier\n");
+            printf("Le chemin %s n'existe pas.\n",chemin);
+    
+        } else {
+            check=1;
+        }
+
     }
-    
+
     int height, width;
     
     int result = fscanf(userInupts,"%d %d",&height,&width);
@@ -160,10 +178,11 @@ int readFile(){
     }
     result = fclose(userInupts);
     if (result == EOF){
-        //printf("Erreur lors de la fermeture du fichier");
+        printf("Erreur lors de la fermeture du fichier");
         return -1;
     }
-    display_grid_arg2(tab,height,width,'S','d');
-    freeMatrix(tab,height);
+    //freeMatrix(tab,height);
+    //display_grid_arg2(tab, height, width, 'S','d');
+
     return 0;
 }
