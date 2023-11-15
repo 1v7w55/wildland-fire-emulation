@@ -2,7 +2,7 @@
 
 ### Equipe 
 - Serine BETTAYEB bettayebserine@gmail.com
-- Sacha VANNIER sacha.vannier@outlook.com
+- Sacha VANNIER svannier@et.esiea.fr
 - Dimitri VERGOZ vergoz@et.esiea.fr
 
 
