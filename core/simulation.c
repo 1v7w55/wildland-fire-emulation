@@ -1,10 +1,12 @@
-#include "../../config/global.h"
-#include "../../config/error_message.h"
-#include "../../bean/type_element.h"
-#include "../../bean/type_point.h"
-#include "../../enum/element.h"
-#include "../../utils/reset_color.h"
-#include "../../utils/free_memory.h"
+#include "simulation.h"
+#include "../utils/color.c"
+#include "../utils/memory.h"
+#include "../core/forest.h"
+#include "../config/global.h"
+#include "../config/error.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 /**
  * This program generates a random width and height for an output,
@@ -41,7 +43,7 @@ void initializeMatrix(Element** matrix, size_t width, size_t height) {
   for (size_t i = 0; i < height; i++) {
     matrix[i] = malloc(width * sizeof(Element));
     if (!matrix[i]) {
-      fprintf(stderr, ERROR_MEMORY);
+      fprintf(stderr, "%s", ERROR_MEMORY);
       freeMatrix(matrix, i);
       exit(1);
     }
@@ -91,12 +93,12 @@ int randomDisplay() {
   // TODO: Ask user if he wants to set a custom width and height
   Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
   if (!listPointsOnFire) {
-    fprintf(stderr, ERROR_MEMORY);
+    fprintf(stderr, "%s", ERROR_MEMORY);
     return 1;
   }
   forestMatrix = (Element**)malloc(gridHeight * sizeof(Element*));
   if (forestMatrix == NULL) {
-    fprintf(stderr, ERROR_MEMORY);
+    fprintf(stderr, "%s", ERROR_MEMORY);
     free(listPointsOnFire);
     return 1;
   }

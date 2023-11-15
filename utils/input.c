@@ -1,6 +1,9 @@
-#include "../bean/type_element.h"
-#include "./display_grid.h"
-#include "./detect_element.h"
+#include "input.h"
+#include "../core/simulation.h"
+#include "../utils/input.h"
+#include "../config/global.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 int createElementArray(){
   Element** forestMatrix = NULL;
@@ -23,7 +26,7 @@ int createElementArray(){
     reader = (char*) malloc((gridWidth + 1) * sizeof(char*));
     //Add one to the gridWidth because of the last char of every string '\0'
     if(reader == NULL) {
-      fprintf(stderr, ERROR_MEMORY);
+      fprintf(stderr, "%s", ERROR_MEMORY);
       free(forestMatrix);
       return -3;
     }

@@ -1,5 +1,11 @@
+#include "menu.h"
+#include <stdio.h>
 #include <ctype.h>
-#include "./starting_menu.h"
+#include <stdlib.h>
+
+#include "../core/simulation.h"
+#include "../utils/input.h"
+
 //Allows you to display the menu before the start of the game
 void menu() {
   int gameMode;
