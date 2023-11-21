@@ -3,6 +3,6 @@
 
 #include "../core/forest.h"
 
-int createElementArray();
+int manualForestCreation();
 
 #endif

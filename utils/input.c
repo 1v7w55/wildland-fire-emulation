@@ -2,10 +2,11 @@
 #include "../core/simulation.h"
 #include "../utils/input.h"
 #include "../config/global.h"
+#include "../core/simulation.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-int createElementArray(){
+int manualForestCreation(){
   Element** forestMatrix = NULL;
   scanf("%ld %ld",&gridHeight,&gridWidth);
   //Initialize a pointer pointer
@@ -44,17 +45,10 @@ int createElementArray(){
     }
     free(reader);
   }
+  // END OF PROCESSING DATA FROM USER
   Point* points = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
   setFire(0, 0, gridWidth, gridHeight, forestMatrix, points, &pointIndex);
   displayMatrix(forestMatrix, gridWidth, gridHeight);
-  for (size_t i = 0; i < pointIndex; i++) {
-    displayMatrix(forestMatrix, gridWidth, gridHeight);
-    setFire(points[i].x, points[i].y, gridWidth, gridHeight, forestMatrix, points, &pointIndex);
-    for (size_t j = 0; j < pointIndex; j++) {
-      if (forestMatrix[points[j].y][points[j].x].degree > 0) {
-          forestMatrix[points[j].y][points[j].x].degree--;
-      }
-    }
-  }
+  processFireSpread(forestMatrix, gridWidth, gridHeight, points, &pointIndex);
   return 0;
 }

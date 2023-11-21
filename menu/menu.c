@@ -19,10 +19,10 @@ void menu() {
     scanf("%d", &gameMode);
     switch (gameMode) {
       case 1:
-        createElementArray();
+        manualForestCreation();
         return;
       case 2:
-        randomDisplay();
+        randomForestCreation();
         return;
       case 3:
         leave();
