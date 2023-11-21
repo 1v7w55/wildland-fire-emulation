@@ -4,5 +4,8 @@
 #include "../core/forest.h"
 
 int manualForestCreation();
+void chooseOption();
+int loadGridFromFile();
+int createElementArray();
 
 #endif

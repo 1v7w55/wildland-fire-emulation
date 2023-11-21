@@ -3,5 +3,6 @@
 
 void menu();
 void leave();
+void chooseOption();
 
 #endif
