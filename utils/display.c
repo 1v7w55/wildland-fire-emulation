@@ -1,7 +1,7 @@
+#include "display.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include "../bean/type_element.h"
 
+// Définitions des fonctions pour l'affichage
 int display_grid( Element **tab,int height,int width,char type1){
   for (int colonne = 0;colonne < width;colonne++){
     switch ((char) type1){
@@ -23,16 +23,4 @@ int display_grid( Element **tab,int height,int width,char type1){
     }
   }
   return 0;
-}
-
-int display_grid_arg2( Element **tab,int height,int width,char type1,char type2){
-  printf("\n");
-  for(int ligne = 0;ligne < height;ligne++) {
-    if (type2 != '!'){
-      display_grid(tab,ligne,width,type1);
-      printf("\t");
-    }
-    display_grid(tab,ligne,width,type2);
-    printf("\n");
-  }
 }

@@ -1,5 +1,11 @@
+#include <stdio.h>
 #include <ctype.h>
-#include "./starting_menu.h"
+#include <stdlib.h>
+
+#include "../core/simulation.h"
+#include "../utils/input.h"
+#include "menu.h"
+
 //Allows you to display the menu before the start of the game
 void menu() {
   int gameMode;
@@ -13,10 +19,10 @@ void menu() {
     scanf("%d", &gameMode);
     switch (gameMode) {
       case 1:
-        createElementArray();
+        chooseOption();
         return;
       case 2:
-        randomDisplay();
+        randomForestCreation();
         return;
       case 3:
         leave();
@@ -39,4 +45,27 @@ void leave() {
   } else {
     menu();
   }
+}
+
+void chooseOption(){
+  int option;
+  do {
+      printf("Veuillez choisir le mode d'input que vous souhaitez ? \n");
+      printf("\t1 - Charger une carte à partir d'un fichier\n");
+      printf("\t2 - Charger à partir du terminal\n");
+      scanf("%d", &option);
+      switch (option) {
+      case 1:
+        loadGridFromFile();
+        return;
+      case 2:
+        createElementArray();
+        return;
+      case 3:
+        break;
+      default:
+        printf("Choix invalide. Veuillez choisir un mode de jeu valide.\n");
+  }
+  return;
+  } while (1);
 }

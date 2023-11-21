@@ -1,10 +1,12 @@
-#include "../../config/global.h"
-#include "../../config/error_message.h"
-#include "../../bean/type_element.h"
-#include "../../bean/type_point.h"
-#include "../../enum/element.h"
-#include "../../utils/reset_color.h"
-#include "../../utils/free_memory.h"
+#include "simulation.h"
+#include "../utils/color.c"
+#include "../utils/memory.h"
+#include "../core/forest.h"
+#include "../config/global.h"
+#include "../config/error.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 /**
  * This program generates a random width and height for an output,
@@ -41,7 +43,7 @@ void initializeMatrix(Element** matrix, size_t width, size_t height) {
   for (size_t i = 0; i < height; i++) {
     matrix[i] = malloc(width * sizeof(Element));
     if (!matrix[i]) {
-      fprintf(stderr, ERROR_MEMORY);
+      fprintf(stderr, "%s", ERROR_MEMORY);
       freeMatrix(matrix, i);
       exit(1);
     }
@@ -82,7 +84,22 @@ void setFire(int randomX, int randomY, size_t width, size_t height, Element** fo
   }
 }
 
-int randomDisplay() {
+void processFireSpread(Element** forestMatrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex) {
+    displayMatrix(forestMatrix, width, height);
+    setFire(randomX, randomY, width, height, forestMatrix, listPointsOnFire, pointIndex);
+  
+    for (size_t i = 0; i < *pointIndex; i++) {
+        setFire(listPointsOnFire[i].x, listPointsOnFire[i].y, width, height, forestMatrix, listPointsOnFire, pointIndex);
+        displayMatrix(forestMatrix, width, height);
+        for (size_t j = 0; j < *pointIndex; j++) {
+            if (forestMatrix[listPointsOnFire[j].y][listPointsOnFire[j].x].degree > 0) {
+                forestMatrix[listPointsOnFire[j].y][listPointsOnFire[j].x].degree--;
+            }
+        }
+    }
+}
+
+int randomForestCreation() {
   Element** forestMatrix = NULL;
   srand(time(NULL));
   // By default and for developpment, we wanna get a random width and height
@@ -91,12 +108,12 @@ int randomDisplay() {
   // TODO: Ask user if he wants to set a custom width and height
   Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
   if (!listPointsOnFire) {
-    fprintf(stderr, ERROR_MEMORY);
+    fprintf(stderr, "%s", ERROR_MEMORY);
     return 1;
   }
   forestMatrix = (Element**)malloc(gridHeight * sizeof(Element*));
   if (forestMatrix == NULL) {
-    fprintf(stderr, ERROR_MEMORY);
+    fprintf(stderr, "%s", ERROR_MEMORY);
     free(listPointsOnFire);
     return 1;
   }
@@ -110,19 +127,7 @@ int randomDisplay() {
   // we set the fire on the random position
   initFire(randomX, randomY, forestMatrix);
   // TODO: Same as above, we need to display this first time to see the first fireSpreadStep of the fire
-  displayMatrix(forestMatrix, gridWidth, gridHeight);
-  setFire(randomX, randomY, gridWidth, gridHeight, forestMatrix, listPointsOnFire, &pointIndex);
-  // For each point in the array, we set the fire on the point and we add the new listPointsOnFire to the array
-  for (size_t i = 0; i < pointIndex; i++) {
-    displayMatrix(forestMatrix, gridWidth, gridHeight);
-    setFire(listPointsOnFire[i].x, listPointsOnFire[i].y, gridWidth, gridHeight, forestMatrix, listPointsOnFire, &pointIndex);
-    // Browse all listPointsOnFire and removing 1 degree
-    for (size_t j = 0; j < pointIndex; j++) {
-      if (forestMatrix[listPointsOnFire[j].y][listPointsOnFire[j].x].degree > 0) {
-        forestMatrix[listPointsOnFire[j].y][listPointsOnFire[j].x].degree--;
-      }
-    }
-  }
+  processFireSpread(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex);
   free(listPointsOnFire);
   freeMatrix(forestMatrix, gridHeight);
   return 0;

@@ -1,17 +1,4 @@
-/**
- * @file main.c
- * @brief project lead
- * @version 1.0 01/09/2023
- * Projet C - ESIEA
-*/
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-#include "./menu/menu.h"
-#include "./config/global.h"
-#include "./config/error.h"
+#include "global.h"
 
 const size_t MAX_WIDTH = 10;
 const size_t MIN_WIDTH = 4;
@@ -24,9 +11,3 @@ unsigned short randomX, randomY;
 
 const char SPACER[] = "\t";
 const char ERROR_MEMORY[] = "Memory allocation failed.\n";
-
-int main() {
-    srand(time(NULL)); 
-    menu();
-    return 0;
-}
