@@ -25,7 +25,7 @@ Element detectionElement(char symbol){
     case '@':
         return extinctAsh;
     default:
-        printf("Le caractère '%c' est interdis.",symbol);
+        //printf("Le caractère '%c' est interdis.",symbol);
 
         //In case the user inputs a char not possible
         Element error = { '!', '!', 0, 0 };
@@ -64,22 +64,21 @@ int createElementArray(){
             return -3;
         }
 
-        //fgets(reader, width, stdin);
+        fgets(reader, width, stdin);
 
-        scanf("%[^\n]", reader);
-        printf("1");
-        printf("%s",reader);
-        printf("1");
+        scanf("%s", reader);
+        //printf("%s",reader);
+
         for (int colonne = 0;colonne < width;colonne++){
             Element character = detectionElement(*(reader + colonne));
             //check the error code
             if (character.symbol != '!'){
                 tab[ligne][colonne] = character ;
             }
-
+            /*
             else{
-                return -1;
-            }
+                //return -1;
+            }*/
             
         }
 
@@ -185,9 +184,6 @@ int readFile(){
 
 
 void chooseOption(){
-
-        //createElementArray();
-        //readFile();
 
     int option;
     do {
