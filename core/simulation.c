@@ -146,7 +146,10 @@ int randomForestCreation() {
     free(listPointsOnFire);
     return 1;
   }
+  // FUTUR matrix returning
   initializeMatrix(forestMatrix, gridWidth, gridHeight);
+
+  // Todo: make another function with elements below
   do {
       getRandomPosition(&randomX, &randomY, gridWidth, gridHeight);
   } while (forestMatrix[randomY][randomX].degree == 0);

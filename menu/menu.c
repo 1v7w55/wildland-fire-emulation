@@ -57,6 +57,7 @@ void loadGrid() {
   printf("Entrez le nom du fichier de la grille à charger (avec l'extension): ");
   scanf("%s", filename);
 
+  // RETURNED GRID here when file's option choose
   Element** grid = loadGridFromFile(filename, &height, &width);
   if (grid != NULL) {
     freeGrid(grid, height); 

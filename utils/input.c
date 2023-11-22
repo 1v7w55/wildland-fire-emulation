@@ -69,7 +69,6 @@ Element** loadGridFromFile(const char* filename, int* outHeight, int* outWidth) 
       free(line);
       return NULL;
     }
-
     line[strcspn(line, "\n")] = 0;
     grid[i] = parseLine(line, width);
     if (grid[i] == NULL) {
@@ -80,9 +79,7 @@ Element** loadGridFromFile(const char* filename, int* outHeight, int* outWidth) 
     }
     free(line);
   }
-
   fclose(file);
-
   *outHeight = height;
   *outWidth = width;
   return grid;
@@ -116,7 +113,6 @@ int createElementArray(){
     }
     fgets(reader, width, stdin);
     scanf("%s", reader);
-    //printf("%s",reader);
 
     for (int colonne = 0;colonne < width;colonne++){
       Element character = detectionElement(*(reader + colonne));
@@ -155,11 +151,9 @@ int manualForestCreation(){
       free(forestMatrix);
       return -3;
     }
-    //fgets(reader, gridWidth, stdin);
     scanf("%s", reader);
     for (int colonne = 0;colonne < gridWidth;colonne++){
       Element character = detectionElement(*(reader + colonne));
-      //check the error code
       if (character.symbol != '!'){
         forestMatrix[i][colonne] = character ;
       }
