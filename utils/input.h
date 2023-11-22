@@ -5,7 +5,8 @@
 
 int manualForestCreation();
 void chooseOption();
-int loadGridFromFile();
+Element** loadGridFromFile(const char* filename, int* outHeight, int* outWidth);
 int createElementArray();
+void freeGrid(Element **grid, int height);
 
 #endif
