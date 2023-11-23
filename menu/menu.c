@@ -3,8 +3,11 @@
 #include <stdlib.h>
 
 #include "../core/simulation.h"
+#include "../config/global.h"
 #include "../utils/input.h"
 #include "menu.h"
+
+const size_t MAX_FILENAME_LENGTH = 100;
 
 //Allows you to display the menu before the start of the game
 void menu() {
@@ -47,25 +50,44 @@ void leave() {
   }
 }
 
-void chooseOption(){
+void loadGrid() {
+  char filename[MAX_FILENAME_LENGTH];
+  int height, width;
+
+  printf("Entrez le nom du fichier de la grille à charger (avec l'extension): ");
+  scanf("%s", filename);
+
+  // RETURNED GRID here when file's option choose
+  Element** grid = loadGridFromFile(filename, &height, &width);
+  if (grid != NULL) {
+    freeGrid(grid, height); 
+  } else {
+    printf("Échec du chargement de la grille.\n");
+  }
+}
+
+void chooseOption() {
   int option;
-  do {
-      printf("Veuillez choisir le mode d'input que vous souhaitez ? \n");
-      printf("\t1 - Charger une carte à partir d'un fichier\n");
-      printf("\t2 - Charger à partir du terminal\n");
-      scanf("%d", &option);
-      switch (option) {
+  while (1) {
+    printf("Veuillez choisir le mode d'input que vous souhaitez ? \n");
+    printf("\t1 - Charger une carte à partir d'un fichier\n");
+    printf("\t2 - Charger à partir du terminal\n");
+
+    if (scanf("%d", &option) != 1) {
+      printf("Entrée invalide.\n");
+      while (getchar() != '\n'); 
+      continue;
+    }
+
+    switch (option) {
       case 1:
-        loadGridFromFile();
+        loadGrid();
         return;
       case 2:
         createElementArray();
         return;
-      case 3:
-        break;
       default:
         printf("Choix invalide. Veuillez choisir un mode de jeu valide.\n");
+    }
   }
-  return;
-  } while (1);
 }

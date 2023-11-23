@@ -62,50 +62,79 @@ void getRandomPosition(unsigned short* randomX, unsigned short* randomY, unsigne
   *randomY = rand() % height;
 }
 
-// Find a way to avoid this function and set this into setFire
 void initFire(int randomX, int randomY, Element** forestMatrix) {
   forestMatrix[randomY][randomX].state += 1;
-  forestMatrix[randomY][randomX].symbol = 'F';
+  forestMatrix[randomY][randomX].symbol = '-';
 }
 
 void setFire(int randomX, int randomY, size_t width, size_t height, Element** forestMatrix, Point* listPointsOnFire, size_t* pointIndex) {
   for (int i = -1; i <= 1; i++) {
     for (int j = -1; j <= 1; j++) {
-      if (randomY + i >= 0 && randomY + i < height && randomX + j >= 0 && randomX + j < width &&
-        forestMatrix[randomY + i][randomX + j].state != 1 &&
-        forestMatrix[randomY + i][randomX + j].degree > 0) {
-        forestMatrix[randomY + i][randomX + j].state += 1;
-        forestMatrix[randomY + i][randomX + j].symbol = 'F';
-        listPointsOnFire[*pointIndex].x = randomX + j;
-        listPointsOnFire[*pointIndex].y = randomY + i;
-        (*pointIndex)++;
+      int newY = randomY + i;
+      int newX = randomX + j;
+      if (newY >= 0 && newY < height && newX >= 0 && newX < width) {
+        Element *adjacentCell = &forestMatrix[newY][newX];
+        if (adjacentCell->state != 1 && adjacentCell->degree > 0) {
+          adjacentCell->state += 1;
+          adjacentCell->degree -= 1;
+          adjacentCell->symbol = '-';
+          listPointsOnFire[*pointIndex].x = newX;
+          listPointsOnFire[*pointIndex].y = newY;
+          (*pointIndex)++;
+        }
       }
     }
   }
 }
 
 void processFireSpread(Element** forestMatrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex) {
-    displayMatrix(forestMatrix, width, height);
-    setFire(randomX, randomY, width, height, forestMatrix, listPointsOnFire, pointIndex);
-  
-    for (size_t i = 0; i < *pointIndex; i++) {
-        setFire(listPointsOnFire[i].x, listPointsOnFire[i].y, width, height, forestMatrix, listPointsOnFire, pointIndex);
-        displayMatrix(forestMatrix, width, height);
-        for (size_t j = 0; j < *pointIndex; j++) {
-            if (forestMatrix[listPointsOnFire[j].y][listPointsOnFire[j].x].degree > 0) {
-                forestMatrix[listPointsOnFire[j].y][listPointsOnFire[j].x].degree--;
-            }
+  size_t currentPointIndex;
+  size_t newPointsOnFire;
+
+  do {
+    currentPointIndex = 0;
+    newPointsOnFire = 0;  
+    size_t numberOfPointsOnFire = *pointIndex;
+
+    while (currentPointIndex < numberOfPointsOnFire) {
+      Point p = listPointsOnFire[currentPointIndex];
+      if (forestMatrix[p.y][p.x].degree > 0) {
+        size_t oldPointIndex = *pointIndex;
+        setFire(p.x, p.y, width, height, forestMatrix, listPointsOnFire, pointIndex);
+        if (*pointIndex > oldPointIndex) {
+          newPointsOnFire += (*pointIndex - oldPointIndex);
         }
+      }
+      currentPointIndex++;
     }
+
+    for (size_t i = 0; i < numberOfPointsOnFire; i++) {
+      Point p = listPointsOnFire[i];
+      if (forestMatrix[p.y][p.x].degree > 0) {
+        forestMatrix[p.y][p.x].degree--;
+        if (forestMatrix[p.y][p.x].degree == 0) {
+          forestMatrix[p.y][p.x].symbol = '@';  
+        }
+      }
+    }
+
+    displayMatrix(forestMatrix, width, height);
+
+    if (newPointsOnFire == 0) {
+      for (size_t i = 0; i < *pointIndex; i++) {
+        if (forestMatrix[listPointsOnFire[i].y][listPointsOnFire[i].x].degree > 0) {
+          newPointsOnFire++;
+        }
+      }
+    }
+  } while (newPointsOnFire > 0);
 }
 
 int randomForestCreation() {
   Element** forestMatrix = NULL;
   srand(time(NULL));
-  // By default and for developpment, we wanna get a random width and height
   gridWidth = (rand() % (MAX_WIDTH - MIN_WIDTH + 1)) + MIN_WIDTH;
-  gridHeight = (rand() % (MAX_WIDTH - MIN_WIDTH + 1)) + MIN_WIDTH;
-  // TODO: Ask user if he wants to set a custom width and height
+  gridHeight = (rand() % (MAX_HEIGHT - MAX_HEIGHT + 1)) + MAX_HEIGHT;
   Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
   if (!listPointsOnFire) {
     fprintf(stderr, "%s", ERROR_MEMORY);
@@ -117,16 +146,20 @@ int randomForestCreation() {
     free(listPointsOnFire);
     return 1;
   }
+  // FUTUR matrix returning
   initializeMatrix(forestMatrix, gridWidth, gridHeight);
-  // We don't want to start the fire on a element with degree 0, so we loop until we find one
+
+  // Todo: make another function with elements below
   do {
       getRandomPosition(&randomX, &randomY, gridWidth, gridHeight);
   } while (forestMatrix[randomY][randomX].degree == 0);
-  // TODO: We need to display this first time to see the first fireSpreadStep of the fire, change to only call one function
   displayMatrix(forestMatrix, gridWidth, gridHeight);
-  // we set the fire on the random position
   initFire(randomX, randomY, forestMatrix);
-  // TODO: Same as above, we need to display this first time to see the first fireSpreadStep of the fire
+  size_t pointIndex = 0;
+  listPointsOnFire[pointIndex].x = randomX;
+  listPointsOnFire[pointIndex].y = randomY;
+  pointIndex++;
+  displayMatrix(forestMatrix, gridWidth, gridHeight);
   processFireSpread(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex);
   free(listPointsOnFire);
   freeMatrix(forestMatrix, gridHeight);
