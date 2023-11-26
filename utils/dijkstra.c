@@ -96,13 +96,17 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
             }
         }
     }    
-
-    printf("La distance minimale depuis (%d, %d) à (%d, %d) est : %d\n",src.row, src.col, dest.row, dest.col, dist[dest.row][dest.col]);
+    if (dist[dest.row][dest.col] != INT_MAX){
+        printf("La distance minimale depuis (%d, %d) à (%d, %d) est : %d\n",src.row, src.col, dest.row, dest.col, dist[dest.row][dest.col]);
+    }
+    else{
+        printf("Il est impossible de rejoindre les 2 points avec un chemin de feu\n");
+    }
 }
 
 int debug_dijkstra() {
     int height,width;
-    Element** grid = loadGridFromFile("test44", &height, &width);
+    Element** grid = loadGridFromFile("test66", &height, &width);
 
     // noeud source et noeud destination
     int srcH,srcW,destH,destW =0;
