@@ -5,6 +5,7 @@
 #include "../core/simulation.h"
 #include "../config/global.h"
 #include "../utils/input.h"
+#include "../utils/dijkstra.h"
 #include "menu.h"
 
 const size_t MAX_FILENAME_LENGTH = 100;
@@ -88,6 +89,8 @@ void chooseOption() {
         return;
       default:
         printf("Choix invalide. Veuillez choisir un mode de jeu valide.\n");
+        debug_dijkstra();
+        printf("esteregg\n");
     }
   }
 }
