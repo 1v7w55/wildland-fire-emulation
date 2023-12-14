@@ -81,8 +81,6 @@ Element** loadGridFromFile(const char* filename, int* outHeight, int* outWidth) 
   }
   fclose(file);
   
-
-
   *outHeight = height;
   *outWidth = width;
   return grid;
