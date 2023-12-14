@@ -94,27 +94,30 @@ void userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPo
   int userChoice;
 
   printf("Que voulez-vous faire ? \n");
-  printf("1. Modifier la grille (PAS IMPLEMENTE)\n");
-  printf("2. Revenir en arrière (PAS IMPLEMENTE)\n");
-  printf("3. Continuer\n");
-  printf("4. Ne plus afficher ce menu.\n");
-  printf("5. Quitter la simulation\n");
+  printf("1. Continuer\n");
+  printf("2. Modifier la grille (PAS IMPLEMENTE)\n");
+  printf("3. Revenir en arrière (PAS IMPLEMENTE)\n");
+  printf("4. Trouver la distance entre deux points (PAS IMPLEMENTE)\n");
+  printf("5. Aller directement à la fin de la propagation du feu.\n");
+  printf("6. Quitter la simulation\n");
   scanf("%d", &userChoice);
 
   switch(userChoice) {
     case 1:
-      // TODO: add possibility to change grid
-      break;
-    case 2:
-      // TODO: same to rollback
-      break;
-    case 3:
       // do nothing, then continue
       break;
+    case 2:
+      // TODO: add possibility to modify grid
+    case 3:
+      // TODO:  add possibility to rollback
+      break;
     case 4:
-      *displayMenu = false; 
+      // TODO: IMPLEMENT dijkstra here
       break;
     case 5:
+      *displayMenu = false; 
+      break;
+    case 6:
       printf("Etes-vous sur de vouloir quitter la partie ? (y/n) ");
       char confirmQuit;
       scanf(" %c", &confirmQuit); 
