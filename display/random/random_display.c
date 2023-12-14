@@ -90,10 +90,14 @@ void setFire(int randomX, int randomY, size_t width, size_t height, Element** fo
 
 int askToContinue() {
     char choice;
-    printf("Vous voulez continuer? (o/n): ");
+    
+    printf("Faites un choix ? \n");
+    printf("\t1 - Continuer\n");
+    printf("\t2 - Modifier la grille (a implementer)\n");
+    printf("\t3 - Quitter\n");
     scanf(" %c", &choice);
-
-    return (choice == 'o' || choice == 'O');
+    while (getchar() != '\n');
+    return (choice == '1');
 }
 
 
@@ -103,6 +107,7 @@ void revoirEtapes(Element** forestMatrix, size_t width, size_t height) {
     printf("1 - Oui\n2 - Non\n");
     scanf("%d", &choixRevoir);
 
+
     if (choixRevoir == 1) {
         int moment;
         printf("Quel moment ?\n");
@@ -111,8 +116,9 @@ void revoirEtapes(Element** forestMatrix, size_t width, size_t height) {
 
         if (moment == 1) {
             // Afficher toutes les étapes
-            for (size_t i = 0; i < pointIndex; i++) {
+            for (size_t step = 0; step < pointIndex; step++) {
                 displayMatrix(forestMatrix, width, height);
+                printf("Etape non cumulee : %ld\n", step);
             }
         } else if (moment == 2) {
             int partie;
@@ -131,6 +137,7 @@ void revoirEtapes(Element** forestMatrix, size_t width, size_t height) {
         }
     }
 }
+
 
 int randomDisplay() { 
     srand(time(NULL));

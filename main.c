@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "./display/random/random_display.h"
+#include "./display/random/random_display.c"
 #include "./utils/manual_input.h"
 #include "./menu/starting_menu.c"
 

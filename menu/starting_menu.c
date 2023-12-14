@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <stdio.h>
 #include "./starting_menu.h"
 //Allows you to display the menu before the start of the game
 void menu() {

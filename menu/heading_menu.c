@@ -23,7 +23,8 @@ void menu() {
         printf("Veuillez choisir le mode de jeu que vous souhaitez ? \n");
         printf("\t1 - Charger une carte\n");
         printf("\t2 - Generer aleatoirement une carte\n");
-        printf("\t3 - Quitter\n");
+        printf("\t3 - Besoin d'aide\n");
+        printf("\t4 - Quitter\n");
         // Read user choice
         scanf("%d", &gameMode);
         switch (gameMode) {
@@ -34,6 +35,9 @@ void menu() {
                 randomDisplay();
                 break;
             case 3:
+                printf("blabal");    
+                menu;
+            case 4:
                 quit = 1; 
                 break; 
             default:
