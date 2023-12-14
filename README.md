@@ -1,6 +1,6 @@
 ## Projet en C Wildland-Fire-Emulation
 
-### Equipe 
+# EQUIPE 
 - Serine BETTAYEB bettayebserine@gmail.com
 - Sacha VANNIER svannier@et.esiea.fr
 - Dimitri VERGOZ vergoz@et.esiea.fr
@@ -23,14 +23,14 @@
 - Possibilité de revenir en arrière dans une simulation.
 - Fonctionnalité pour interrompre et changer des cellules.
 - Vérifier si un incendie peut se propager d'un point A à un point B.
-- Option pour quitter la simulation.
+- ~~Option pour quitter la simulation.~~
 
 ### 3. Contraintes:
 - Code modulaire avec utilisation de différents fichiers `.c` et `.h`.
     - *Les fichiers .c contiennent le code source effectif du programme, tandis que*
     - *les fichiers .h définissent des interfaces, comme les déclarations de fonctions et les structures, pour assurer la modularité et la réutilisabilité du code.*
-- Allocation dynamique de mémoire (utilisation de malloc, etc...).
-- Utilisation de fonctions récursives (while, for).
+- ~~Allocation dynamique de mémoire (utilisation de malloc, etc...).~~
+- ~~Utilisation de fonctions récursives (while, for).~~
 
 ### 4. Consignes et critères d'évaluation:
 - Travail réalisé en trinômes.

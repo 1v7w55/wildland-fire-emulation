@@ -170,7 +170,8 @@ int manualForestCreation(){
   // END OF PROCESSING DATA FROM USER
   Point* points = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
   setFire(0, 0, gridWidth, gridHeight, forestMatrix, points, &pointIndex);
-  displayMatrix(forestMatrix, gridWidth, gridHeight);
-  processFireSpread(forestMatrix, gridWidth, gridHeight, points, &pointIndex);
+  // To do: change var declaration because it's useless
+  bool displayMenu = true;
+  processFireSpread(forestMatrix, gridWidth, gridHeight, points, &pointIndex, &displayMenu);
   return 0;
 }
