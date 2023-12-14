@@ -89,8 +89,6 @@ void chooseOption() {
         return;
       default:
         printf("Choix invalide. Veuillez choisir un mode de jeu valide.\n");
-        debug_dijkstra();
-        printf("esteregg\n");
     }
   }
 }

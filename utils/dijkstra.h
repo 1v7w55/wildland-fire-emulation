@@ -10,6 +10,7 @@ typedef struct {
 Node creeNode(int row, int col);
 int isValid(int row, int col, int height,int width);
 void dijkstra(Element** grid,int height, int width, Node src, Node dest) ;
+void menu_dijkstra(Element** grid,int height, int width) ;
 int debug_dijkstra() ;
 
 #endif
