@@ -1,12 +1,15 @@
 #include "simulation.h"
 #include "../utils/color.c"
 #include "../utils/memory.h"
+#include "../utils/input.h"
 #include "../core/forest.h"
 #include "../config/global.h"
 #include "../config/error.h"
+#include "../menu/menu.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 
 /**
  * This program generates a random width and height for an output,
@@ -87,15 +90,61 @@ void setFire(int randomX, int randomY, size_t width, size_t height, Element** fo
   }
 }
 
-void processFireSpread(Element** forestMatrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex) {
+void userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex, size_t* numberOfPointsOnFire, bool* displayMenu) {
+  int userChoice;
+
+  printf("Que voulez-vous faire ? \n");
+  printf("1. Modifier la grille (PAS IMPLEMENTE)\n");
+  printf("2. Revenir en arrière (PAS IMPLEMENTE)\n");
+  printf("3. Continuer\n");
+  printf("4. Ne plus afficher ce menu.\n");
+  printf("5. Quitter la simulation\n");
+  scanf("%d", &userChoice);
+
+  switch(userChoice) {
+    case 1:
+      // TODO: add possibility to change grid
+      break;
+    case 2:
+      // TODO: same to rollback
+      break;
+    case 3:
+      // do nothing, then continue
+      break;
+    case 4:
+      *displayMenu = false; 
+      break;
+    case 5:
+      printf("Etes-vous sur de vouloir quitter la partie ? (y/n) ");
+      char confirmQuit;
+      scanf(" %c", &confirmQuit); 
+      if (confirmQuit == 'y' || confirmQuit == 'Y') {
+          freeGrid(forestMatrix, height);
+          menu();
+      }
+      break;
+    default:
+      printf("Choix non valide. Nous allons continuer.\n");
+  }
+}
+
+void processFireSpread(Element** forestMatrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex, bool* displayMenu) {
   size_t currentPointIndex;
   size_t newPointsOnFire;
+  bool isFireInitialized = false;
 
   do {
     currentPointIndex = 0;
     newPointsOnFire = 0;  
     size_t numberOfPointsOnFire = *pointIndex;
-
+    if (*displayMenu) {
+      userMenu(forestMatrix, width, height, listPointsOnFire, pointIndex, &numberOfPointsOnFire, displayMenu);
+    }
+    if (!isFireInitialized) {
+      initFire(randomX, randomY, forestMatrix);
+      isFireInitialized = true;
+    }
+    displayMatrix(forestMatrix, width, height);
     while (currentPointIndex < numberOfPointsOnFire) {
       Point p = listPointsOnFire[currentPointIndex];
       if (forestMatrix[p.y][p.x].degree > 0) {
@@ -118,8 +167,6 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
       }
     }
 
-    displayMatrix(forestMatrix, width, height);
-
     if (newPointsOnFire == 0) {
       for (size_t i = 0; i < *pointIndex; i++) {
         if (forestMatrix[listPointsOnFire[i].y][listPointsOnFire[i].x].degree > 0) {
@@ -130,11 +177,27 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
   } while (newPointsOnFire > 0);
 }
 
+void getUserInputForSize(int *width, int *height) {
+  char userChoice;
+  printf("Voulez-vous choisir la taille de la forêt (O/n): ");
+  scanf(" %c", &userChoice);
+
+  if (userChoice == 'o' || userChoice == 'O') {
+    printf("Choissez la largeur : ");
+    scanf("%d", width);
+    printf("Choissez la longueur : ");
+    scanf("%d", height);
+  } else {
+    *width = (rand() % (MAX_WIDTH - MIN_WIDTH + 1)) + MIN_WIDTH;
+    *height = (rand() % (MAX_HEIGHT - MIN_HEIGHT + 1)) + MIN_HEIGHT;
+  }
+}
+
 int randomForestCreation() {
   Element** forestMatrix = NULL;
   srand(time(NULL));
-  gridWidth = (rand() % (MAX_WIDTH - MIN_WIDTH + 1)) + MIN_WIDTH;
-  gridHeight = (rand() % (MAX_HEIGHT - MAX_HEIGHT + 1)) + MAX_HEIGHT;
+  int gridWidth, gridHeight;
+  getUserInputForSize(&gridWidth, &gridHeight);
   Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
   if (!listPointsOnFire) {
     fprintf(stderr, "%s", ERROR_MEMORY);
@@ -153,14 +216,13 @@ int randomForestCreation() {
   do {
       getRandomPosition(&randomX, &randomY, gridWidth, gridHeight);
   } while (forestMatrix[randomY][randomX].degree == 0);
-  displayMatrix(forestMatrix, gridWidth, gridHeight);
-  initFire(randomX, randomY, forestMatrix);
   size_t pointIndex = 0;
   listPointsOnFire[pointIndex].x = randomX;
   listPointsOnFire[pointIndex].y = randomY;
   pointIndex++;
   displayMatrix(forestMatrix, gridWidth, gridHeight);
-  processFireSpread(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex);
+  bool displayMenu = true;
+  processFireSpread(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex, &displayMenu);
   free(listPointsOnFire);
   freeMatrix(forestMatrix, gridHeight);
   return 0;
