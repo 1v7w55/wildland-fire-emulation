@@ -1,6 +1,6 @@
 ## Projet en C Wildland-Fire-Emulation
 
-### Equipe 
+# EQUIPE 
 - Serine BETTAYEB bettayebserine@gmail.com
 - Sacha VANNIER svannier@et.esiea.fr
 - Dimitri VERGOZ vergoz@et.esiea.fr
