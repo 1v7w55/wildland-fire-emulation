@@ -81,9 +81,11 @@ void setFire(int randomX, int randomY, size_t width, size_t height, Element** fo
           adjacentCell->state += 1;
           adjacentCell->degree -= 1;
           adjacentCell->symbol = '-';
-          listPointsOnFire[*pointIndex].x = newX;
-          listPointsOnFire[*pointIndex].y = newY;
-          (*pointIndex)++;
+          if (pointOnFire(listPointsOnFire, pointIndex, newX, newY) == 0){
+            listPointsOnFire[*pointIndex].x = newX;
+            listPointsOnFire[*pointIndex].y = newY;
+            (*pointIndex)++;
+          }
         }
       }
     }
@@ -230,6 +232,16 @@ int randomForestCreation() {
   return 0;
 }
 
+//return 0 si le point (XY) n'est pas dans la list des feu sinon return 1
+int pointOnFire(Point* listPointsOnFire, size_t* pointIndex,int x,int y){
+  for(int i=0;i<(*pointIndex);i++){
+      if (listPointsOnFire[i].x == x && listPointsOnFire[i].y == y ){
+        return 1;
+      }
+  }
+  return 0;
+}
+
 void modifyGridElement(Element** forestMatrix, size_t width, size_t height,  Point* listPointsOnFire, size_t* pointIndex){
   printf("Votre grille actuel est :\n");
   displayMatrix(forestMatrix, width, height);
@@ -252,8 +264,25 @@ void modifyGridElement(Element** forestMatrix, size_t width, size_t height,  Poi
   Element character = detectionElement(c);
       //check the error code
   if (character.symbol != '!'){
-    forestMatrix[x][y] = character ;
-    forestMatrix[x][y].degree = temp;
-    forestMatrix[x][y].state = state;
+    forestMatrix[y][x] = character ;
+    forestMatrix[y][x].degree = temp;
+    forestMatrix[y][x].state = state;
+    //ajouter x y a la list des éléments en feu
+    //si passe de allumé a étein supprimer de la liste
     if (state==1){
-      li
+      forestMatrix[y][x].symbol = '-';
+      if (pointOnFire(listPointsOnFire, pointIndex, x, y) == 0){
+      listPointsOnFire[*pointIndex].x = x;
+      listPointsOnFire[*pointIndex].y = y;
+      (*pointIndex)++;
+      printf("begne %ld\n",(*pointIndex));
+    }
+  }
+  else{
+     printf("Le charactère n'est pas valide\n");
+  }
+
+
+  return;
+}
+}

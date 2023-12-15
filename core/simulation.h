@@ -12,6 +12,7 @@ void initFire(int randomX, int randomY, Element** forestMatrix);
 void setFire(int randomX, int randomY, size_t width, size_t height, Element** forestMatrix, Point* listPointsOnFire, size_t* pointIndex);
 int randomForestCreation();
 void modifyGridElement(Element** forestMatrix, size_t width, size_t heigh,  Point* listPointsOnFire, size_t* pointIndex);
+int pointOnFire(Point* listPointsOnFire, size_t* pointIndex,int x,int y);
 void processFireSpread(Element** forestMatrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex, bool* displayMenu);
 
 #endif
