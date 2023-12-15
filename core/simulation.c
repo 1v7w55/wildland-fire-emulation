@@ -6,6 +6,7 @@
 #include "../config/global.h"
 #include "../config/error.h"
 #include "../menu/menu.h"
+#include "../utils/dijkstra.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -97,7 +98,7 @@ void userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPo
   printf("1. Continuer\n");
   printf("2. Modifier la grille (PAS IMPLEMENTE)\n");
   printf("3. Revenir en arrière (PAS IMPLEMENTE)\n");
-  printf("4. Trouver la distance entre deux points (PAS IMPLEMENTE)\n");
+  printf("4. Trouver la distance entre deux points\n");
   printf("5. Aller directement à la fin de la propagation du feu.\n");
   printf("6. Quitter la simulation\n");
   scanf("%d", &userChoice);
@@ -113,6 +114,7 @@ void userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPo
       break;
     case 4:
       // TODO: IMPLEMENT dijkstra here
+      menu_dijkstra(forestMatrix, height, width);
       break;
     case 5:
       *displayMenu = false; 

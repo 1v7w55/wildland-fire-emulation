@@ -5,6 +5,7 @@
 #include "../core/simulation.h"
 #include "../config/global.h"
 #include "../utils/input.h"
+#include "../utils/dijkstra.h"
 #include "menu.h"
 
 const size_t MAX_FILENAME_LENGTH = 100;

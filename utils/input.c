@@ -87,8 +87,9 @@ Element** loadGridFromFile(const char* filename, int* outHeight, int* outWidth) 
 
 int createElementArray(){
   int height, width;
+  printf("Tapez ou collez les dimensions avec la longueur espacent la largeur.\nVous pouvez vous inspirer des exemples dans le dossier saves.\n");
   scanf("%d %d",&height,&width);
-  printf("\n");
+  //printf("\n");
   //Initialize a pointer pointer
   Element** tab = NULL;
   //Allocate the necessary memory to it
