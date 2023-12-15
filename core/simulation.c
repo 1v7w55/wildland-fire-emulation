@@ -95,7 +95,7 @@ void userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPo
 
   printf("Que voulez-vous faire ? \n");
   printf("1. Continuer\n");
-  printf("2. Modifier la grille (PAS IMPLEMENTE)\n");
+  printf("2. Modifier la grille\n");
   printf("3. Revenir en arrière (PAS IMPLEMENTE)\n");
   printf("4. Trouver la distance entre deux points (PAS IMPLEMENTE)\n");
   printf("5. Aller directement à la fin de la propagation du feu.\n");
@@ -107,7 +107,7 @@ void userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPo
       // do nothing, then continue
       break;
     case 2:
-      // TODO: add possibility to modify grid
+      modifyGridElement(forestMatrix, width, height,  listPointsOnFire, pointIndex);
     case 3:
       // TODO:  add possibility to rollback
       break;
@@ -147,7 +147,6 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
       initFire(randomX, randomY, forestMatrix);
       isFireInitialized = true;
     }
-    displayMatrix(forestMatrix, width, height);
     while (currentPointIndex < numberOfPointsOnFire) {
       Point p = listPointsOnFire[currentPointIndex];
       if (forestMatrix[p.y][p.x].degree > 0) {
@@ -159,7 +158,7 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
       }
       currentPointIndex++;
     }
-
+    displayMatrix(forestMatrix, width, height);
     for (size_t i = 0; i < numberOfPointsOnFire; i++) {
       Point p = listPointsOnFire[i];
       if (forestMatrix[p.y][p.x].degree > 0) {
@@ -230,3 +229,31 @@ int randomForestCreation() {
   freeMatrix(forestMatrix, gridHeight);
   return 0;
 }
+
+void modifyGridElement(Element** forestMatrix, size_t width, size_t height,  Point* listPointsOnFire, size_t* pointIndex){
+  printf("Votre grille actuel est :\n");
+  displayMatrix(forestMatrix, width, height);
+  
+  int x,y,temp,state = 0;
+  char c;
+
+  printf("Quel sont les coordonnées de la grille voulez vous modifier ? (Sous forme \"X Y\")\n");
+  scanf("%d %d",&x,&y);
+  
+  printf("Quel élément doit le remplacer ? (Possibilité '+', '*',' ','#','x', '/','-','@')\n");
+  scanf(" %c",&c);
+  
+  printf("Quel température doit le remplacer ?\n");
+  scanf("%d",&temp);
+
+  printf("Quel est le statue ? (0 = éteint et 1 = allumé) \n");
+  scanf("%d",&state);
+
+  Element character = detectionElement(c);
+      //check the error code
+  if (character.symbol != '!'){
+    forestMatrix[x][y] = character ;
+    forestMatrix[x][y].degree = temp;
+    forestMatrix[x][y].state = state;
+    if (state==1){
+      li
