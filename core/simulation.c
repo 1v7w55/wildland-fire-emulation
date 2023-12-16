@@ -220,7 +220,7 @@ int randomForestCreation() {
   return 0;
 }
 
-//Ajoute le point (XY) a la list des feux on ne fait risi il n'y est pas
+//Ajoute le point (XY) a la list des feux si il n'y est pas
 void pointOnFire(Point* listPointsOnFire, size_t* pointIndex,int x,int y){
   for(int i=0;i<(*pointIndex);i++){
       if (listPointsOnFire[i].x == x && listPointsOnFire[i].y == y ){
@@ -233,6 +233,8 @@ void pointOnFire(Point* listPointsOnFire, size_t* pointIndex,int x,int y){
   return;
 }
 
+
+//Fonction de mofication de grille
 void modifyGridElement(Element** forestMatrix, size_t width, size_t height,  Point* listPointsOnFire, size_t* pointIndex){
   printf("Votre grille actuel est :\n");
   displayMatrix(forestMatrix, width, height);
