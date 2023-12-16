@@ -66,8 +66,8 @@ void getRandomPosition(unsigned short* randomX, unsigned short* randomY, unsigne
 }
 
 void initFire(int randomX, int randomY, Element** forestMatrix) {
-  forestMatrix[randomY][randomX].state += 1;
-  forestMatrix[randomY][randomX].symbol = '-';
+  forestMatrix[randomY][randomX].state = 1;
+  checkAsh (forestMatrix, randomX, randomY);
 }
 
 void setFire(int randomX, int randomY, size_t width, size_t height, Element** forestMatrix, Point* listPointsOnFire, size_t* pointIndex) {
@@ -78,14 +78,10 @@ void setFire(int randomX, int randomY, size_t width, size_t height, Element** fo
       if (newY >= 0 && newY < height && newX >= 0 && newX < width) {
         Element *adjacentCell = &forestMatrix[newY][newX];
         if (adjacentCell->state != 1 && adjacentCell->degree > 0) {
-          adjacentCell->state += 1;
+          adjacentCell->state = 1;
           adjacentCell->degree -= 1;
-          adjacentCell->symbol = '-';
-          if (pointOnFire(listPointsOnFire, pointIndex, newX, newY) == 0){
-            listPointsOnFire[*pointIndex].x = newX;
-            listPointsOnFire[*pointIndex].y = newY;
-            (*pointIndex)++;
-          }
+          checkAsh (forestMatrix, newX, newY);
+          pointOnFire(listPointsOnFire, pointIndex, newX, newY);
         }
       }
     }
@@ -161,15 +157,7 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
       currentPointIndex++;
     }
     displayMatrix(forestMatrix, width, height);
-    for (size_t i = 0; i < numberOfPointsOnFire; i++) {
-      Point p = listPointsOnFire[i];
-      if (forestMatrix[p.y][p.x].degree > 0) {
-        forestMatrix[p.y][p.x].degree--;
-        if (forestMatrix[p.y][p.x].degree == 0) {
-          forestMatrix[p.y][p.x].symbol = '@';  
-        }
-      }
-    }
+    checkExtinctAsh(forestMatrix, listPointsOnFire, pointIndex);
 
     if (newPointsOnFire == 0) {
       for (size_t i = 0; i < *pointIndex; i++) {
@@ -179,6 +167,7 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
       }
     }
   } while (newPointsOnFire > 0);
+  displayMatrix(forestMatrix, width, height);
 }
 
 void getUserInputForSize(int *width, int *height) {
@@ -232,20 +221,23 @@ int randomForestCreation() {
   return 0;
 }
 
-//return 0 si le point (XY) n'est pas dans la list des feu sinon return 1
-int pointOnFire(Point* listPointsOnFire, size_t* pointIndex,int x,int y){
+//Ajoute le point (XY) a la list des feux on ne fait risi il n'y est pas
+void pointOnFire(Point* listPointsOnFire, size_t* pointIndex,int x,int y){
   for(int i=0;i<(*pointIndex);i++){
       if (listPointsOnFire[i].x == x && listPointsOnFire[i].y == y ){
-        return 1;
+        return;
       }
   }
-  return 0;
+  listPointsOnFire[*pointIndex].x = x;
+  listPointsOnFire[*pointIndex].y = y;
+  (*pointIndex)++;
+  return;
 }
 
 void modifyGridElement(Element** forestMatrix, size_t width, size_t height,  Point* listPointsOnFire, size_t* pointIndex){
   printf("Votre grille actuel est :\n");
   displayMatrix(forestMatrix, width, height);
-  
+
   int x,y,temp,state = 0;
   char c;
 
@@ -262,27 +254,53 @@ void modifyGridElement(Element** forestMatrix, size_t width, size_t height,  Poi
   scanf("%d",&state);
 
   Element character = detectionElement(c);
-      //check the error code
   if (character.symbol != '!'){
     forestMatrix[y][x] = character ;
+    if (temp < 0) {
+      temp = 0;
+    }
     forestMatrix[y][x].degree = temp;
-    forestMatrix[y][x].state = state;
-    //ajouter x y a la list des éléments en feu
-    //si passe de allumé a étein supprimer de la liste
+    if (state <= 1 && state >=0){
+      forestMatrix[y][x].state = state;
+    }else{
+      return;
+    }
+    //si passe de allumé a étein supprimer de la liste (TO DO)
     if (state==1){
-      forestMatrix[y][x].symbol = '-';
-      if (pointOnFire(listPointsOnFire, pointIndex, x, y) == 0){
-      listPointsOnFire[*pointIndex].x = x;
-      listPointsOnFire[*pointIndex].y = y;
-      (*pointIndex)++;
-      printf("begne %ld\n",(*pointIndex));
+      //ajouter x y a la list des éléments en feu
+      pointOnFire(listPointsOnFire, pointIndex, x, y);
+      
+      checkExtinctAsh(forestMatrix, listPointsOnFire, pointIndex);
     }
   }
   else{
      printf("Le charactère n'est pas valide\n");
   }
-
-
   return;
 }
+
+
+//Vérifie pour l'ensemebel des points de la liste listPointsOnFire si leur etat ne dois pas passer a ExtinctAsh
+void checkExtinctAsh(Element** forestMatrix, Point* listPointsOnFire, size_t* pointIndex){
+  for (size_t i = 0; i < (*pointIndex); i++) {
+    Point p = listPointsOnFire[i];
+    //printf("[%d %d] ",listPointsOnFire[i].x ,listPointsOnFire[i].y );
+    if (forestMatrix[p.y][p.x].degree > 0) {
+      forestMatrix[p.y][p.x].degree--;
+    }
+    checkAsh (forestMatrix,p.x, p.y);
+  }
+  //printf("\n");
+  return;
+}
+//Vérifie si une cellule a une température de 2 et docn doit changé de symbole
+void checkAsh (Element** forestMatrix,int x, int y){
+  Element *adjacentCell = &forestMatrix[y][x];
+  if (adjacentCell->degree == 1){
+    adjacentCell->symbol = '-';
+  }
+  if (adjacentCell->degree == 0){
+    adjacentCell->symbol = '@';
+  }
+  return;
 }
