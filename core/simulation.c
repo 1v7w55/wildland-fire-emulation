@@ -264,7 +264,7 @@ void modifyGridElement(Element** forestMatrix, size_t width, size_t height,  Poi
     }else{
       return;
     }
-    //si passe de allumé a étein supprimer de la liste (TO DO)
+    //si passe de allumé a éteint supprimer de la liste (TO DO)
     if (state==1){
       //ajouter x y a la list des éléments en feu
       pointOnFire(listPointsOnFire, pointIndex, x, y);
@@ -278,7 +278,7 @@ void modifyGridElement(Element** forestMatrix, size_t width, size_t height,  Poi
 }
 
 
-//Vérifie pour l'ensemebel des points de la liste listPointsOnFire si leur etat ne dois pas passer a ExtinctAsh
+//Vérifie pour l'ensemeble des points de la liste listPointsOnFire si leur etat ne dois pas passé a ExtinctAsh
 void checkExtinctAsh(Element** forestMatrix, Point* listPointsOnFire, size_t* pointIndex){
   for (size_t i = 0; i < (*pointIndex); i++) {
     Point p = listPointsOnFire[i];
@@ -289,7 +289,7 @@ void checkExtinctAsh(Element** forestMatrix, Point* listPointsOnFire, size_t* po
   }
   return;
 }
-//Vérifie si une cellule a une température de 2 et docn doit changé de symbole
+//Vérifie si une cellule a une température de 2 et donc doit changer de symbole
 void checkAsh (Element** forestMatrix,int x, int y){
   Element *adjacentCell = &forestMatrix[y][x];
   if (adjacentCell->degree == 1){
