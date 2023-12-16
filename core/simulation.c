@@ -79,7 +79,6 @@ void setFire(int randomX, int randomY, size_t width, size_t height, Element** fo
         Element *adjacentCell = &forestMatrix[newY][newX];
         if (adjacentCell->state != 1 && adjacentCell->degree > 0) {
           adjacentCell->state = 1;
-          adjacentCell->degree -= 1;
           checkAsh (forestMatrix, newX, newY);
           pointOnFire(listPointsOnFire, pointIndex, newX, newY);
         }
@@ -116,7 +115,7 @@ void userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPo
       *displayMenu = false; 
       break;
     case 6:
-      printf("Etes-vous sur de vouloir quitter la partie ? (y/n) ");
+      printf("Etes-vous sur de vouloir quitter la partie ? (Y/N) ");
       char confirmQuit;
       scanf(" %c", &confirmQuit); 
       if (confirmQuit == 'y' || confirmQuit == 'Y') {
@@ -156,8 +155,8 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
       }
       currentPointIndex++;
     }
-    displayMatrix(forestMatrix, width, height);
     checkExtinctAsh(forestMatrix, listPointsOnFire, pointIndex);
+    displayMatrix(forestMatrix, width, height);
 
     if (newPointsOnFire == 0) {
       for (size_t i = 0; i < *pointIndex; i++) {
@@ -172,10 +171,10 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
 
 void getUserInputForSize(int *width, int *height) {
   char userChoice;
-  printf("Voulez-vous choisir la taille de la forêt (O/n): ");
+  printf("Voulez-vous choisir la taille de la forêt (Y/N): ");
   scanf(" %c", &userChoice);
 
-  if (userChoice == 'o' || userChoice == 'O') {
+  if (userChoice == 'y' || userChoice == 'Y') {
     printf("Choissez la largeur : ");
     scanf("%d", width);
     printf("Choissez la longueur : ");
@@ -269,12 +268,11 @@ void modifyGridElement(Element** forestMatrix, size_t width, size_t height,  Poi
     if (state==1){
       //ajouter x y a la list des éléments en feu
       pointOnFire(listPointsOnFire, pointIndex, x, y);
-      
-      checkExtinctAsh(forestMatrix, listPointsOnFire, pointIndex);
+      checkAsh(forestMatrix, x, y);
     }
   }
   else{
-     printf("Le charactère n'est pas valide\n");
+    printf("Le charactère n'est pas valide\n");
   }
   return;
 }
@@ -284,13 +282,11 @@ void modifyGridElement(Element** forestMatrix, size_t width, size_t height,  Poi
 void checkExtinctAsh(Element** forestMatrix, Point* listPointsOnFire, size_t* pointIndex){
   for (size_t i = 0; i < (*pointIndex); i++) {
     Point p = listPointsOnFire[i];
-    //printf("[%d %d] ",listPointsOnFire[i].x ,listPointsOnFire[i].y );
     if (forestMatrix[p.y][p.x].degree > 0) {
       forestMatrix[p.y][p.x].degree--;
     }
     checkAsh (forestMatrix,p.x, p.y);
   }
-  //printf("\n");
   return;
 }
 //Vérifie si une cellule a une température de 2 et docn doit changé de symbole
