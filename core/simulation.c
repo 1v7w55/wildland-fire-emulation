@@ -115,7 +115,7 @@ void userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPo
       *displayMenu = false; 
       break;
     case 6:
-      printf("Etes-vous sur de vouloir quitter la partie ? (Y/N) ");
+      printf("Etes-vous sur de vouloir quitter la partie ? (y/N) ");
       char confirmQuit;
       scanf(" %c", &confirmQuit); 
       if (confirmQuit == 'y' || confirmQuit == 'Y') {
@@ -171,10 +171,10 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
 
 void getUserInputForSize(int *width, int *height) {
   char userChoice;
-  printf("Voulez-vous choisir la taille de la forêt (Y/N): ");
+  printf("Voulez-vous choisir la taille de la forêt (O/n): ");
   scanf(" %c", &userChoice);
 
-  if (userChoice == 'y' || userChoice == 'Y') {
+  if (userChoice == 'O' || userChoice == 'o') {
     printf("Choissez la largeur : ");
     scanf("%d", width);
     printf("Choissez la longueur : ");
