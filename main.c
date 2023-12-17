@@ -20,7 +20,7 @@ const size_t MIN_HEIGHT = 4;
 
 size_t gridWidth, gridHeight;
 size_t pointIndex, fireSpreadStep;
-unsigned short randomX, randomY;
+size_t randomX, randomY;
 
 const char SPACER[] = "\t";
 const char ERROR_MEMORY[] = "Memory allocation failed.\n";

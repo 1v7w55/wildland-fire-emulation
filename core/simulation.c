@@ -42,7 +42,7 @@ void displayMatrix(Element** matrix, size_t width, size_t height) {
   printf("\n");
 }
 
-void initializeMatrix(Element** matrix, size_t width, size_t height) {
+void initializeMatrix(Element** matrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex) {
   for (size_t i = 0; i < height; i++) {
     matrix[i] = malloc(width * sizeof(Element));
     if (!matrix[i]) {
@@ -57,19 +57,12 @@ void initializeMatrix(Element** matrix, size_t width, size_t height) {
       matrix[i][j] = element;
     }
   }
-  push(matrix, width, height);
+  push(matrix, width, height, listPointsOnFire, *pointIndex);
 }
 
-
-// TODO : issue with size_t so we use unsigned short
-void getRandomPosition(unsigned short* randomX, unsigned short* randomY, unsigned short width, unsigned short height) {
+void getRandomPosition(size_t* randomX, size_t* randomY, size_t width, size_t height) {
   *randomX = rand() % width;
   *randomY = rand() % height;
-}
-
-void initFire(int randomX, int randomY, Element** forestMatrix) {
-  forestMatrix[randomY][randomX].state = 1;
-  checkAsh (forestMatrix, randomX, randomY);
 }
 
 void setFire(int randomX, int randomY, size_t width, size_t height, Element** forestMatrix, Point* listPointsOnFire, size_t* pointIndex) {
@@ -108,13 +101,9 @@ int userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPoi
     case 2:
       modifyGridElement(forestMatrix, width, height, listPointsOnFire, pointIndex);
       break;
-    case 3:
-      if (*forestStack) {
-          pop(&forestMatrix, width, height);
-          displayMatrix(forestMatrix, width, height);
-      } else {
-          printf("Impossible de revenir en arrière, la pile est vide.\n");
-      }
+    case 3: 
+      popSecondLast(&forestMatrix, width, height, listPointsOnFire, pointIndex);
+      displayMatrix(forestMatrix, width, height);
       break;
     case 4:
       menu_dijkstra(forestMatrix, height, width);
@@ -127,8 +116,8 @@ int userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPoi
       char confirmQuit;
       scanf(" %c", &confirmQuit); 
       if (confirmQuit == 'y' || confirmQuit == 'Y') {
-          freeGrid(forestMatrix, height);
-          menu();
+        freeGrid(forestMatrix, height);
+        menu();
       }
       break;
     default:
@@ -140,8 +129,9 @@ int userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPoi
 void processFireSpread(Element** forestMatrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex, bool* displayMenu) {
   size_t currentPointIndex;
   size_t newPointsOnFire;
-  bool isFireInitialized = false;
-  int userChoice = 0;
+  int userChoice = 0; 
+  bool isFireInitialized = false; 
+  size_t randomX, randomY;
 
   do {
     currentPointIndex = 0;
@@ -151,10 +141,9 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
     if (*displayMenu) {
       userChoice = userMenu(forestMatrix, width, height, listPointsOnFire, pointIndex, displayMenu, &forestStack);
     }
-
-    if (userChoice == 1) {
+    if (userChoice == 1 || userChoice == 5) {
       if (!isFireInitialized) {
-        initFire(randomX, randomY, forestMatrix);
+        getRandomPosition(&randomX, &randomY, width, height);
         isFireInitialized = true;
       }
       while (currentPointIndex < numberOfPointsOnFire) {
@@ -170,9 +159,8 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
       }
       checkExtinctAsh(forestMatrix, listPointsOnFire, pointIndex);
       displayMatrix(forestMatrix, width, height);
-      push(forestMatrix, width, height);
+      push(forestMatrix, width, height, listPointsOnFire, *pointIndex);
     }
-
     if (newPointsOnFire == 0) {
       for (size_t i = 0; i < *pointIndex; i++) {
         if (forestMatrix[listPointsOnFire[i].y][listPointsOnFire[i].x].degree > 0) {
@@ -180,10 +168,12 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
         }
       }
     }
+    fireSpreadStep++;
   } while (newPointsOnFire > 0 && userChoice != 6);
-
-  displayMatrix(forestMatrix, width, height);
-  push(forestMatrix, width, height);
+  if (userChoice == 1 || userChoice == 5) {
+    displayMatrix(forestMatrix, width, height);
+    push(forestMatrix, width, height, listPointsOnFire, *pointIndex);
+  }
 }
 
 void getUserInputForSize(int *width, int *height) {
@@ -203,57 +193,57 @@ void getUserInputForSize(int *width, int *height) {
 }
 
 int randomForestCreation() {
-    Element** forestMatrix = NULL;
-    srand(time(NULL));
-    int gridWidth, gridHeight;
-    getUserInputForSize(&gridWidth, &gridHeight);
+  Element** forestMatrix = NULL;
+  srand(time(NULL));
+  int gridWidth, gridHeight;
+  getUserInputForSize(&gridWidth, &gridHeight);
 
-    Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
-    if (!listPointsOnFire) {
-        fprintf(stderr, "%s", ERROR_MEMORY);
-        return 1;
-    }
+  Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
+  if (!listPointsOnFire) {
+    fprintf(stderr, "%s", ERROR_MEMORY);
+    return 1;
+  }
 
-    forestMatrix = (Element**)malloc(gridHeight * sizeof(Element*));
-    if (forestMatrix == NULL) {
-        fprintf(stderr, "%s", ERROR_MEMORY);
-        free(listPointsOnFire);
-        return 1;
-    }
-
-    initializeMatrix(forestMatrix, gridWidth, gridHeight);
-
-    unsigned short randomX, randomY;
-    do {
-        getRandomPosition(&randomX, &randomY, gridWidth, gridHeight);
-    } while (forestMatrix[randomY][randomX].degree == 0);
-
-    size_t pointIndex = 0;
-    listPointsOnFire[pointIndex].x = randomX;
-    listPointsOnFire[pointIndex].y = randomY;
-    pointIndex++;
-
-    displayMatrix(forestMatrix, gridWidth, gridHeight);
-
-    push(forestMatrix, gridWidth, gridHeight); 
-
-    bool displayMenu = true;
-    processFireSpread(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex, &displayMenu);
-
-    while (forestStack != NULL) {
-        pop(&forestMatrix, gridWidth, gridHeight);
-    }
-
+  forestMatrix = (Element**)malloc(gridHeight * sizeof(Element*));
+  if (forestMatrix == NULL) {
+    fprintf(stderr, "%s", ERROR_MEMORY);
     free(listPointsOnFire);
-    freeMatrix(forestMatrix, gridHeight);
-    return 0;
+    return 1;
+  }
+
+  initializeMatrix(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex);
+
+  size_t randomX, randomY;
+  do {
+    getRandomPosition(&randomX, &randomY, gridWidth, gridHeight);
+  } while (forestMatrix[randomY][randomX].degree == 0);
+
+  size_t pointIndex = 0;
+  listPointsOnFire[pointIndex].x = randomX;
+  listPointsOnFire[pointIndex].y = randomY;
+  pointIndex++;
+
+  displayMatrix(forestMatrix, gridWidth, gridHeight);
+
+  push(forestMatrix, gridWidth, gridHeight, listPointsOnFire, pointIndex);
+
+  bool displayMenu = true;
+  processFireSpread(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex, &displayMenu);
+
+  while (forestStack != NULL) {
+    pop(&forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex);
+  } 
+
+  free(listPointsOnFire);
+  freeMatrix(forestMatrix, gridHeight);
+  return 0;
 }
 
 void pointOnFire(Point* listPointsOnFire, size_t* pointIndex,int x,int y){
   for(int i=0;i<(*pointIndex);i++){
-      if (listPointsOnFire[i].x == x && listPointsOnFire[i].y == y ){
-        return;
-      }
+    if (listPointsOnFire[i].x == x && listPointsOnFire[i].y == y ){
+      return;
+    }
   }
   listPointsOnFire[*pointIndex].x = x;
   listPointsOnFire[*pointIndex].y = y;
@@ -297,7 +287,7 @@ void modifyGridElement(Element** forestMatrix, size_t width, size_t height,  Poi
       pointOnFire(listPointsOnFire, pointIndex, x, y);
       checkAsh(forestMatrix, x, y);
     }
-    push(forestMatrix, width, height);
+    push(forestMatrix, width, height, listPointsOnFire, *pointIndex);
   }
   else {
     printf("Le caractère n'est pas valide\n");
