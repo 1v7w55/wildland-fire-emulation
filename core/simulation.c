@@ -146,7 +146,6 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
     if (userChoice == 1 || userChoice == 5) {
       if (!isFireInitialized) {
         getRandomPosition(&randomX, &randomY, width, height);
-        setFire(randomX, randomY, width, height, forestMatrix, listPointsOnFire, pointIndex);
         isFireInitialized = true;
       }
       while (currentPointIndex < numberOfPointsOnFire) {
