@@ -62,7 +62,6 @@ void loadGrid() {
 
   Element** forestMatrix = loadGridFromFile(filename, &height, &width);
   if (forestMatrix != NULL) {
-    // Initialisation des points de feu
     Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * height * width);
     if (!listPointsOnFire) {
       fprintf(stderr, "%s", ERROR_MEMORY);
