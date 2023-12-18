@@ -2,6 +2,7 @@
 #define DIJKSTRA_H
 
 #include "../core/forest.h"
+#include <stddef.h>
 
 typedef struct {
     int row, col;
@@ -11,6 +12,7 @@ Node creeNode(int row, int col);
 int isValid(int row, int col, int height,int width);
 void dijkstra(Element** grid,int height, int width, Node src, Node dest) ;
 void menu_dijkstra(Element** grid,int height, int width) ;
+void display_way(Element** matrix, size_t width, size_t height, Node* predecessor, Node dest);
 int debug_dijkstra() ;
 
 #endif

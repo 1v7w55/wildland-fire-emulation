@@ -2,6 +2,8 @@
 #include "../core/simulation.h"
 #include "../utils/input.h"
 #include "../config/global.h"
+#include "color.h"
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -22,7 +24,6 @@ int isValid(int row, int col, int height,int width) {
 // Algo de dijkstra
 void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
     int** dist = NULL;
-    //Allocate the necessary memory to it
     dist = ( int **) malloc(height * sizeof( int*));
     if(dist == NULL) {
         return;
@@ -40,7 +41,6 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
     // Tableau noeud vu
 
     int** vu = NULL;
-    //Allocate the necessary memory to it
     vu = ( int **) malloc(height * sizeof( int*));
     if(vu == NULL) {
         return;
@@ -55,11 +55,15 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
         *(vu + ligne) = line;
     }
 
+    Node* predecessor = NULL;
+    predecessor = (Node*)malloc(height * width * sizeof(Node));
+
     // Toute les distances a max et les vistes a 0
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             dist[i][j] = INT_MAX;
             vu[i][j] = 0;
+            predecessor[i] = creeNode(-1, -1);
         }
     }
 
@@ -90,18 +94,25 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
                         Element *adjacentCell = &grid[u.row + i][u.col + j];
                         if (adjacentCell->degree > 0){
                             dist[u.row + i][u.col + j] = dist[u.row][u.col] + 1;
+                            predecessor[(u.row + i) * width + (u.col + j)] = u;
                         }
                     
                 }
             }
         }
     }    
+
     if (dist[dest.row][dest.col] != INT_MAX){
-        printf("La distance minimale depuis (%d, %d) à (%d, %d) est : %d\n",src.row, src.col, dest.row, dest.col, dist[dest.row][dest.col]);
+        printf("Points du plus court chemin entre (%d, %d) et (%d, %d):\n", dest.row, dest.col, src.row, src.col);
+        display_way(grid,height, width,predecessor,dest);
+        printf("\nLa distance minimale depuis (%d, %d) à (%d, %d) est : %d\n", dest.row, dest.col,src.row, src.col, dist[dest.row][dest.col]);
     }
     else{
-        printf("Il est impossible de rejoindre les 2 points avec un chemin de feu\n");
+        printf("\nIl est impossible de rejoindre les 2 points avec un chemin de feu\n");
     }
+    free(dist);
+    free(vu);
+    free(predecessor);
 }
 
 int debug_dijkstra() {
@@ -137,4 +148,35 @@ void menu_dijkstra(Element** grid,int height, int width) {
 
     dijkstra(grid,height, width, src, dest);
 
+}
+
+void display_way(Element** matrix, size_t width, size_t height, Node* predecessor, Node dest) {
+    //Afficher le chemin en bleu
+
+    int* chemin = (int *) calloc((height * width )+1, sizeof(int));
+
+    while (dest.row != -1 && dest.col != -1) {
+        printf("(%d, %d) ", dest.row, dest.col);
+        chemin[dest.row * width + dest.col] = 1;
+        dest = predecessor[dest.row * width + dest.col];
+    }
+    printf("\nLes espaces sont représenté par %s pour mieux voir le chemin.\n","%");
+    for (size_t i = 0; i < height; i++) {
+        for (size_t j = 0; j < width; j++) {
+            if (chemin[i * width + j] == 1) {
+                if (matrix[i][j].symbol == ' '){
+                    printf(COLOR_BLUE "%s" COLOR_RESET,"%"); 
+                    // remplace l'espace pour qu'on vois le chemin
+                }
+                else{
+                    printf(COLOR_BLUE "%c" COLOR_RESET,matrix[i][j].symbol);
+                }
+            } 
+            else {
+                printf("%c", matrix[i][j].symbol);
+            }
+        }
+        printf("\n");
+    }
+    free(chemin);
 }
