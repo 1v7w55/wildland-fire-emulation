@@ -88,7 +88,7 @@ int userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPoi
   printf("Que voulez-vous faire ? \n");
   printf("1. Continuer\n");
   printf("2. Modifier la grille\n");
-  printf("3. Revenir en arrière (PAS IMPLEMENTE)\n");
+  printf("3. Revenir en arrière\n");
   printf("4. Trouver la distance entre deux points\n");
   printf("5. Aller directement à la fin de la propagation du feu.\n");
   printf("6. Quitter la simulation\n");
