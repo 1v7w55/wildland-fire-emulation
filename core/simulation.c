@@ -132,6 +132,7 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
   int userChoice = 0; 
   bool isFireInitialized = false; 
   size_t randomX, randomY;
+  bool fireSpreadCompleted = false;
 
   do {
     currentPointIndex = 0;
@@ -141,9 +142,11 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
     if (*displayMenu) {
       userChoice = userMenu(forestMatrix, width, height, listPointsOnFire, pointIndex, displayMenu, &forestStack);
     }
+
     if (userChoice == 1 || userChoice == 5) {
       if (!isFireInitialized) {
         getRandomPosition(&randomX, &randomY, width, height);
+        setFire(randomX, randomY, width, height, forestMatrix, listPointsOnFire, pointIndex);
         isFireInitialized = true;
       }
       while (currentPointIndex < numberOfPointsOnFire) {
@@ -161,18 +164,20 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
       displayMatrix(forestMatrix, width, height);
       push(forestMatrix, width, height, listPointsOnFire, *pointIndex);
     }
+
     if (newPointsOnFire == 0) {
+      fireSpreadCompleted = true;
       for (size_t i = 0; i < *pointIndex; i++) {
         if (forestMatrix[listPointsOnFire[i].y][listPointsOnFire[i].x].degree > 0) {
           newPointsOnFire++;
         }
       }
     }
-    fireSpreadStep++;
   } while (newPointsOnFire > 0 && userChoice != 6);
-  if (userChoice == 1 || userChoice == 5) {
-    displayMatrix(forestMatrix, width, height);
-    push(forestMatrix, width, height, listPointsOnFire, *pointIndex);
+
+  while(fireSpreadCompleted && userChoice != 6) {
+    printf("Le feu a fini de se propager. Que voulez-vous faire?\n");
+    userChoice = userMenu(forestMatrix, width, height, listPointsOnFire, pointIndex, displayMenu, &forestStack);
   }
 }
 

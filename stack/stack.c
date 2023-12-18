@@ -56,7 +56,7 @@ void pop(Element ***map, size_t width, size_t height, Point* listPointsOnFire, s
 
 void popSecondLast(Element ***map, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex) {
 	if (!forestStack || !forestStack->prec) {
-		printf("Pas assez d'éléments dans la pile pour revenir à l'avant-dernier.\n");
+		printf("La pile est vide.\n");
 		return;
 	}
 
