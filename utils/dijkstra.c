@@ -55,20 +55,22 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
         *(vu + ligne) = line;
     }
 
-    Node* predecessor = NULL;
-    predecessor = (Node*)malloc(height * width * sizeof(Node));
 
-    // Toute les distances a max et les vistes a 0
+    Node* pre = NULL;
+    pre = (Node*)malloc(height * width * sizeof(Node));
+    //node précédent pour récupérer le chemin a la fin
+
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             dist[i][j] = INT_MAX;
             vu[i][j] = 0;
-            predecessor[i] = creeNode(-1, -1);
+            pre[i] = creeNode(-1, -1);
         }
     }
+    // Toute les distances a max et les vistes a 0
 
-    // dist de src a src =0
     dist[src.row][src.col] = 0;
+    // dist de src a src =0
 
     for (int count = 0; count < height * width - 1; count++){
         int minDist = INT_MAX;
@@ -94,9 +96,8 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
                         Element *adjacentCell = &grid[u.row + i][u.col + j];
                         if (adjacentCell->degree > 0){
                             dist[u.row + i][u.col + j] = dist[u.row][u.col] + 1;
-                            predecessor[(u.row + i) * width + (u.col + j)] = u;
+                            pre[(u.row + i) * width + (u.col + j)] = u;
                         }
-                    
                 }
             }
         }
@@ -104,7 +105,7 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
 
     if (dist[dest.row][dest.col] != INT_MAX){
         printf("Points du plus court chemin entre (%d, %d) et (%d, %d):\n", dest.row, dest.col, src.row, src.col);
-        display_way(grid,height, width,predecessor,dest);
+        display_way(grid,height, width,pre,dest);
         printf("\nLa distance minimale depuis (%d, %d) à (%d, %d) est : %d\n", dest.row, dest.col,src.row, src.col, dist[dest.row][dest.col]);
     }
     else{
@@ -112,9 +113,9 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
     }
     free(dist);
     free(vu);
-    free(predecessor);
+    free(pre);
 }
-
+/*
 int debug_dijkstra() {
     int height,width;
     Element** grid = loadGridFromFile("test66", &height, &width);
@@ -130,10 +131,9 @@ int debug_dijkstra() {
     dijkstra(grid,height, width, src, dest);
 
     return 0;
-}
+}*/
 
 void menu_dijkstra(Element** grid,int height, int width) {
-    //Element** grid = loadGridFromFile("test66", &height, &width);
 
     // noeud source et noeud destination
     int srcH,srcW,destH,destW =0;
@@ -150,7 +150,7 @@ void menu_dijkstra(Element** grid,int height, int width) {
 
 }
 
-void display_way(Element** matrix, size_t width, size_t height, Node* predecessor, Node dest) {
+void display_way(Element** matrix, size_t width, size_t height, Node* pre, Node dest) {
     //Afficher le chemin en bleu
 
     int* chemin = (int *) calloc((height * width )+1, sizeof(int));
@@ -158,7 +158,7 @@ void display_way(Element** matrix, size_t width, size_t height, Node* predecesso
     while (dest.row != -1 && dest.col != -1) {
         printf("(%d, %d) ", dest.row, dest.col);
         chemin[dest.row * width + dest.col] = 1;
-        dest = predecessor[dest.row * width + dest.col];
+        dest = pre[dest.row * width + dest.col];
     }
     printf("\nLes espaces sont représenté par %s pour mieux voir le chemin.\n","%");
     for (size_t i = 0; i < height; i++) {
