@@ -7,6 +7,7 @@
 #include "../config/error.h"
 #include "../menu/menu.h"
 #include "../utils/dijkstra.h"
+#include "../utils/save.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -97,7 +98,8 @@ void userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPo
   printf("3. Revenir en arrière (PAS IMPLEMENTE)\n");
   printf("4. Trouver la distance entre deux points\n");
   printf("5. Aller directement à la fin de la propagation du feu.\n");
-  printf("6. Quitter la simulation\n");
+  printf("6. Sauvgarder la partie dans un fichier.\n");
+  printf("7. Quitter la simulation\n");
   scanf("%d", &userChoice);
 
   switch(userChoice) {
@@ -117,6 +119,9 @@ void userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPo
       *displayMenu = false; 
       break;
     case 6:
+      save_grid(forestMatrix, height, width);
+      break;
+    case 7:
       printf("Etes-vous sur de vouloir quitter la partie ? (y/N) ");
       char confirmQuit;
       scanf(" %c", &confirmQuit); 

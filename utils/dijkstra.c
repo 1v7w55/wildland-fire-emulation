@@ -122,8 +122,6 @@ int debug_dijkstra() {
 }
 
 void menu_dijkstra(Element** grid,int height, int width) {
-    //Element** grid = loadGridFromFile("test66", &height, &width);
-
     // noeud source et noeud destination
     int srcH,srcW,destH,destW =0;
     printf("Votre grille actuel est :\n");
