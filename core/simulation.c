@@ -6,10 +6,13 @@
 #include "../config/global.h"
 #include "../config/error.h"
 #include "../menu/menu.h"
+#include "../utils/dijkstra.h"
+#include "../utils/save.h"
+#include "../stack/stack.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <stdbool.h>
+#include <string.h>
 
 /**
  * This program generates a random width and height for an output,
@@ -35,14 +38,10 @@ void displayMatrix(Element** matrix, size_t width, size_t height) {
     // END DEBUG
     printf("\n");
   }
-  // DEBUG ONLY
-  printf("Etape : %ld\n", fireSpreadStep);
-  fireSpreadStep++;
-  // END DEBUG
   printf("\n");
 }
 
-void initializeMatrix(Element** matrix, size_t width, size_t height) {
+void initializeMatrix(Element** matrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex) {
   for (size_t i = 0; i < height; i++) {
     matrix[i] = malloc(width * sizeof(Element));
     if (!matrix[i]) {
@@ -57,17 +56,12 @@ void initializeMatrix(Element** matrix, size_t width, size_t height) {
       matrix[i][j] = element;
     }
   }
+  push(matrix, width, height, listPointsOnFire, *pointIndex);
 }
 
-// TODO : issue with size_t so we use unsigned short
-void getRandomPosition(unsigned short* randomX, unsigned short* randomY, unsigned short width, unsigned short height) {
+void getRandomPosition(size_t* randomX, size_t* randomY, size_t width, size_t height) {
   *randomX = rand() % width;
   *randomY = rand() % height;
-}
-
-void initFire(int randomX, int randomY, Element** forestMatrix) {
-  forestMatrix[randomY][randomX].state += 1;
-  forestMatrix[randomY][randomX].symbol = '-';
 }
 
 void setFire(int randomX, int randomY, size_t width, size_t height, Element** forestMatrix, Point* listPointsOnFire, size_t* pointIndex) {
@@ -78,106 +72,124 @@ void setFire(int randomX, int randomY, size_t width, size_t height, Element** fo
       if (newY >= 0 && newY < height && newX >= 0 && newX < width) {
         Element *adjacentCell = &forestMatrix[newY][newX];
         if (adjacentCell->state != 1 && adjacentCell->degree > 0) {
-          adjacentCell->state += 1;
-          adjacentCell->degree -= 1;
-          adjacentCell->symbol = '-';
-          listPointsOnFire[*pointIndex].x = newX;
-          listPointsOnFire[*pointIndex].y = newY;
-          (*pointIndex)++;
+          adjacentCell->state = 1;
+          checkAsh (forestMatrix, newX, newY);
+          pointOnFire(listPointsOnFire, pointIndex, newX, newY);
         }
       }
     }
   }
 }
 
-void userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex, size_t* numberOfPointsOnFire, bool* displayMenu) {
+int userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex, bool* displayMenu, stack **forestStack) {
   int userChoice;
 
   printf("Que voulez-vous faire ? \n");
   printf("1. Continuer\n");
-  printf("2. Modifier la grille (PAS IMPLEMENTE)\n");
-  printf("3. Revenir en arrière (PAS IMPLEMENTE)\n");
-  printf("4. Trouver la distance entre deux points (PAS IMPLEMENTE)\n");
+  printf("2. Modifier la grille\n");
+  printf("3. Revenir en arrière\n");
+  printf("4. Trouver la distance entre deux points\n");
   printf("5. Aller directement à la fin de la propagation du feu.\n");
-  printf("6. Quitter la simulation\n");
+  printf("6. Sauvgarder la partie dans un fichier.\n");
+  printf("7. Quitter la simulation\n");
   scanf("%d", &userChoice);
 
   switch(userChoice) {
     case 1:
-      // do nothing, then continue
+      // Do nothing
       break;
     case 2:
-      // TODO: add possibility to modify grid
-    case 3:
-      // TODO:  add possibility to rollback
+      modifyGridElement(forestMatrix, width, height, listPointsOnFire, pointIndex);
+      break;
+   case 3: 
+      if (*forestStack != NULL && countStackElements(*forestStack) >= 2) {
+        pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
+        hasUserRolledBack = true;
+      }
       break;
     case 4:
-      // TODO: IMPLEMENT dijkstra here
+      menu_dijkstra(forestMatrix, height, width);
       break;
     case 5:
       *displayMenu = false; 
       break;
     case 6:
-      printf("Etes-vous sur de vouloir quitter la partie ? (y/n) ");
+      save_grid(forestMatrix, height, width);
+      break;
+    case 7:
+      printf("Etes-vous sur de vouloir quitter la partie ? (y/N) ");
       char confirmQuit;
       scanf(" %c", &confirmQuit); 
       if (confirmQuit == 'y' || confirmQuit == 'Y') {
-          freeGrid(forestMatrix, height);
-          menu();
+        freeGrid(forestMatrix, height);
+        menu();
       }
       break;
     default:
       printf("Choix non valide. Nous allons continuer.\n");
   }
+  return userChoice;
 }
 
 void processFireSpread(Element** forestMatrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex, bool* displayMenu) {
   size_t currentPointIndex;
   size_t newPointsOnFire;
-  bool isFireInitialized = false;
+  int userChoice = 0; 
+  bool isFireInitialized = false; 
+  bool fireSpreadCompleted = false;
 
   do {
     currentPointIndex = 0;
-    newPointsOnFire = 0;  
+    newPointsOnFire = 0;
     size_t numberOfPointsOnFire = *pointIndex;
+
     if (*displayMenu) {
-      userMenu(forestMatrix, width, height, listPointsOnFire, pointIndex, &numberOfPointsOnFire, displayMenu);
-    }
-    if (!isFireInitialized) {
-      initFire(randomX, randomY, forestMatrix);
-      isFireInitialized = true;
-    }
-    displayMatrix(forestMatrix, width, height);
-    while (currentPointIndex < numberOfPointsOnFire) {
-      Point p = listPointsOnFire[currentPointIndex];
-      if (forestMatrix[p.y][p.x].degree > 0) {
-        size_t oldPointIndex = *pointIndex;
-        setFire(p.x, p.y, width, height, forestMatrix, listPointsOnFire, pointIndex);
-        if (*pointIndex > oldPointIndex) {
-          newPointsOnFire += (*pointIndex - oldPointIndex);
+      userChoice = userMenu(forestMatrix, width, height, listPointsOnFire, pointIndex, displayMenu, &forestStack);
+
+      if (userChoice == 3) {
+        if (forestStack != NULL) {
+          pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
+          displayMatrix(forestMatrix, width, height);
+          hasUserRolledBack = true;
+        } else {
+          pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
         }
       }
-      currentPointIndex++;
     }
 
-    for (size_t i = 0; i < numberOfPointsOnFire; i++) {
-      Point p = listPointsOnFire[i];
-      if (forestMatrix[p.y][p.x].degree > 0) {
-        forestMatrix[p.y][p.x].degree--;
-        if (forestMatrix[p.y][p.x].degree == 0) {
-          forestMatrix[p.y][p.x].symbol = '@';  
-        }
+    if (!fireSpreadCompleted && (userChoice == 1 || userChoice == 5)) {
+      if (!isFireInitialized) {
+        size_t randomX, randomY;
+        getRandomPosition(&randomX, &randomY, width, height);
+        isFireInitialized = true;
       }
+      while (currentPointIndex < numberOfPointsOnFire) {
+        Point p = listPointsOnFire[currentPointIndex];
+        if (forestMatrix[p.y][p.x].degree > 0) {
+          size_t oldPointIndex = *pointIndex;
+          setFire(p.x, p.y, width, height, forestMatrix, listPointsOnFire, pointIndex);
+          if (*pointIndex > oldPointIndex) {
+            newPointsOnFire += (*pointIndex - oldPointIndex);
+          }
+        }
+        currentPointIndex++;
+      }
+      checkExtinctAsh(forestMatrix, listPointsOnFire, pointIndex);
+      displayMatrix(forestMatrix, width, height);
+      push(forestMatrix, width, height, listPointsOnFire, *pointIndex);
     }
 
     if (newPointsOnFire == 0) {
+      fireSpreadCompleted = true;
+      *displayMenu=true;
       for (size_t i = 0; i < *pointIndex; i++) {
         if (forestMatrix[listPointsOnFire[i].y][listPointsOnFire[i].x].degree > 0) {
           newPointsOnFire++;
+          fireSpreadCompleted = false;
         }
       }
     }
-  } while (newPointsOnFire > 0);
+  } while (!fireSpreadCompleted || userChoice != 7);
 }
 
 void getUserInputForSize(int *width, int *height) {
@@ -185,7 +197,7 @@ void getUserInputForSize(int *width, int *height) {
   printf("Voulez-vous choisir la taille de la forêt (O/n): ");
   scanf(" %c", &userChoice);
 
-  if (userChoice == 'o' || userChoice == 'O') {
+  if (userChoice == 'O' || userChoice == 'o') {
     printf("Choissez la largeur : ");
     scanf("%d", width);
     printf("Choissez la longueur : ");
@@ -201,32 +213,124 @@ int randomForestCreation() {
   srand(time(NULL));
   int gridWidth, gridHeight;
   getUserInputForSize(&gridWidth, &gridHeight);
+
   Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
   if (!listPointsOnFire) {
     fprintf(stderr, "%s", ERROR_MEMORY);
     return 1;
   }
+
   forestMatrix = (Element**)malloc(gridHeight * sizeof(Element*));
   if (forestMatrix == NULL) {
     fprintf(stderr, "%s", ERROR_MEMORY);
     free(listPointsOnFire);
     return 1;
   }
-  // FUTUR matrix returning
-  initializeMatrix(forestMatrix, gridWidth, gridHeight);
 
-  // Todo: make another function with elements below
+  initializeMatrix(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex);
+
+  size_t randomX, randomY;
   do {
-      getRandomPosition(&randomX, &randomY, gridWidth, gridHeight);
+    getRandomPosition(&randomX, &randomY, gridWidth, gridHeight);
   } while (forestMatrix[randomY][randomX].degree == 0);
+
   size_t pointIndex = 0;
   listPointsOnFire[pointIndex].x = randomX;
   listPointsOnFire[pointIndex].y = randomY;
   pointIndex++;
+
   displayMatrix(forestMatrix, gridWidth, gridHeight);
+
+  push(forestMatrix, gridWidth, gridHeight, listPointsOnFire, pointIndex);
+
   bool displayMenu = true;
   processFireSpread(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex, &displayMenu);
+
+  while (forestStack != NULL) {
+    pop(&forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex);
+  } 
+
   free(listPointsOnFire);
   freeMatrix(forestMatrix, gridHeight);
   return 0;
+}
+
+void pointOnFire(Point* listPointsOnFire, size_t* pointIndex,int x,int y){
+  for(int i=0;i<(*pointIndex);i++){
+    if (listPointsOnFire[i].x == x && listPointsOnFire[i].y == y ){
+      return;
+    }
+  }
+  listPointsOnFire[*pointIndex].x = x;
+  listPointsOnFire[*pointIndex].y = y;
+  (*pointIndex)++;
+  return;
+}
+
+//Fonction de mofication de grille
+void modifyGridElement(Element** forestMatrix, size_t width, size_t height,  Point* listPointsOnFire, size_t* pointIndex){
+  printf("Votre grille actuelle est :\n");
+  displayMatrix(forestMatrix, width, height);
+
+  int x,y,temp,state = 0;
+  char c;
+
+  printf("Quelles sont les coordonnées de la grille que vous souhaitez modifier ? (Sous forme \"X Y\")\n");
+  scanf("%d %d",&x,&y);
+  
+  printf("Quel élément doit le remplacer ? (Possibilité '+', '*',' ','#','x', '/','-','@')\n");
+  scanf(" %c",&c);
+  
+  printf("Quelle température doit le remplacer ?\n");
+  scanf("%d",&temp);
+
+  printf("Quel est le statut ? (0 = éteint et 1 = allumé) \n");
+  scanf("%d",&state);
+
+  Element character = detectionElement(c);
+  if (character.symbol != '!'){
+    forestMatrix[y][x] = character ;
+    if (temp < 0) {
+      temp = 0;
+    }
+    forestMatrix[y][x].degree = temp;
+    if (state <= 1 && state >=0){
+      forestMatrix[y][x].state = state;
+    } else {
+      return;
+    }
+    if (state == 1) {
+      pointOnFire(listPointsOnFire, pointIndex, x, y);
+      checkAsh(forestMatrix, x, y);
+    }
+    push(forestMatrix, width, height, listPointsOnFire, *pointIndex);
+  }
+  else {
+    printf("Le caractère n'est pas valide\n");
+  }
+  return;
+}
+
+//Vérifie pour l'ensemeble des points de la liste listPointsOnFire si leur etat ne dois pas passé a ExtinctAsh
+void checkExtinctAsh(Element** forestMatrix, Point* listPointsOnFire, size_t* pointIndex){
+  for (size_t i = 0; i < (*pointIndex); i++) {
+    Point p = listPointsOnFire[i];
+    if (forestMatrix[p.y][p.x].degree > 0) {
+      forestMatrix[p.y][p.x].degree--;
+    }
+    checkAsh (forestMatrix,p.x, p.y);
+  }
+  return;
+}
+
+//Vérifie si une cellule a une température de 2 et donc doit changer de symbole
+void checkAsh (Element** forestMatrix,int x, int y){
+  Element *adjacentCell = &forestMatrix[y][x];
+  if (adjacentCell->degree == 1){
+    adjacentCell->symbol = '-';
+  }
+  if (adjacentCell->degree == 0){
+    adjacentCell->symbol = '@';
+  }
+  return;
 }

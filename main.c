@@ -20,13 +20,27 @@ const size_t MIN_HEIGHT = 4;
 
 size_t gridWidth, gridHeight;
 size_t pointIndex, fireSpreadStep;
-unsigned short randomX, randomY;
+size_t randomX, randomY;
 
+bool fireSpreadCompleted = false;
+bool hasUserRolledBack = false;
 const char SPACER[] = "\t";
 const char ERROR_MEMORY[] = "Memory allocation failed.\n";
 
+void displayLogo() {
+    printf("\n");
+    printf("██╗    ██╗██╗██╗     ██████╗ ██╗      █████╗ ███╗   ██╗██████╗     ███████╗██╗██████╗ ███████╗\n");
+    printf("██║    ██║██║██║     ██╔══██╗██║     ██╔══██╗████╗  ██║██╔══██╗    ██╔════╝██║██╔══██╗██╔════╝\n");
+    printf("██║ █╗ ██║██║██║     ██║  ██║██║     ███████║██╔██╗ ██║██║  ██║    █████╗  ██║██████╔╝█████╗  \n");
+    printf("██║███╗██║██║██║     ██║  ██║██║     ██╔══██║██║╚██╗██║██║  ██║    ██╔══╝  ██║██╔══██╗██╔══╝  \n");
+    printf("╚███╔███╔╝██║███████╗██████╔╝███████╗██║  ██║██║ ╚████║██████╔╝    ██║     ██║██║  ██║███████╗\n");
+    printf(" ╚══╝╚══╝ ╚═╝╚══════╝╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝     ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝\n");
+    printf("\n");
+}
+
 int main() {
     srand(time(NULL)); 
+    displayLogo();
     menu();
     return 0;
 }
