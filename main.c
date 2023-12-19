@@ -22,6 +22,8 @@ size_t gridWidth, gridHeight;
 size_t pointIndex, fireSpreadStep;
 size_t randomX, randomY;
 
+bool fireSpreadCompleted = false;
+bool hasUserRolledBack = false;
 const char SPACER[] = "\t";
 const char ERROR_MEMORY[] = "Memory allocation failed.\n";
 
