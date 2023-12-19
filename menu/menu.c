@@ -3,7 +3,9 @@
 #include <stdlib.h>
 
 #include "../core/simulation.h"
+#include "../stack/stack.h"
 #include "../config/global.h"
+#include "../utils/memory.h"
 #include "../utils/input.h"
 #include "../utils/dijkstra.h"
 #include "menu.h"
@@ -58,10 +60,37 @@ void loadGrid() {
   printf("Entrez le nom du fichier de la grille à charger (avec l'extension): ");
   scanf("%s", filename);
 
-  // RETURNED GRID here when file's option choose
-  Element** grid = loadGridFromFile(filename, &height, &width);
-  if (grid != NULL) {
-    freeGrid(grid, height); 
+  Element** forestMatrix = loadGridFromFile(filename, &height, &width);
+  if (forestMatrix != NULL) {
+    Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * height * width);
+    if (!listPointsOnFire) {
+      fprintf(stderr, "%s", ERROR_MEMORY);
+      freeMatrix(forestMatrix, height);
+      return;
+    }
+
+    size_t pointIndex = 0;
+    size_t randomX, randomY;
+    do {
+      getRandomPosition(&randomX, &randomY, width, height);
+    } while (forestMatrix[randomY][randomX].degree == 0);
+
+    listPointsOnFire[pointIndex].x = randomX;
+    listPointsOnFire[pointIndex].y = randomY;
+    pointIndex++;
+
+    displayMatrix(forestMatrix, width, height);
+
+    push(forestMatrix, width, height, listPointsOnFire, pointIndex);
+    bool displayMenu = true;
+    processFireSpread(forestMatrix, width, height, listPointsOnFire, &pointIndex, &displayMenu);
+
+    while (forestStack != NULL) {
+      pop(&forestMatrix, width, height, listPointsOnFire, &pointIndex);
+    }
+
+    free(listPointsOnFire);
+    freeMatrix(forestMatrix, height);
   } else {
     printf("Échec du chargement de la grille.\n");
   }
