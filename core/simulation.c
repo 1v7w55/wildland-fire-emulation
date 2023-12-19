@@ -189,7 +189,7 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
         }
       }
     }
-  } while (!fireSpreadCompleted || userChoice != 6);
+  } while (!fireSpreadCompleted || userChoice != 7);
 }
 
 void getUserInputForSize(int *width, int *height) {
