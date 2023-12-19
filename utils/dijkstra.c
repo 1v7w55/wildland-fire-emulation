@@ -125,16 +125,22 @@ void menu_dijkstra(Element** grid,int height, int width) {
     //Element** grid = loadGridFromFile("test66", &height, &width);
 
     // noeud source et noeud destination
-    int srcH,srcW,destH,destW =0;
+    int srcH, srcW, destH, destW;
     printf("Votre grille actuel est :\n");
     displayMatrix(grid, width, height);
-    printf("Quel sont les coordonnées du premier point ? (Sous la forme \"X Y\")\n");
-    scanf("%d %d",&srcH,&srcW);
-    printf("Quel sont les coordonnées du second point ? (Sous la forme \"X Y\")\n");
-    scanf("%d %d",&destH,&destW);
+
+    do {
+        printf("Quel sont les coordonnées du premier point ? (Sous la forme \"X Y\")\n");
+        scanf("%d %d", &srcH, &srcW);
+    } while(srcH < 0 || srcH >= height || srcW < 0 || srcW >= width);
+
+    do {
+        printf("Quel sont les coordonnées du second point ? (Sous la forme \"X Y\")\n");
+        scanf("%d %d", &destH, &destW);
+    } while(destH < 0 || destH >= height || destW < 0 || destW >= width);
+
     Node src = creeNode(srcH, srcW);
     Node dest = creeNode(destH, destW);
 
-    dijkstra(grid,height, width, src, dest);
-
+    dijkstra(grid, height, width, src, dest);
 }
