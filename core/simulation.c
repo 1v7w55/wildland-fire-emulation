@@ -11,10 +11,33 @@
 #include <time.h>
 #include <stdbool.h>
 
+#define MAX_ITERATIONS 100 
+
 /**
  * This program generates a random width and height for an output,
  * and then prints a random symbol from an array for each row and column of the output.
- */
+*/
+
+
+typedef struct {
+    Element** matrix;
+    size_t width;
+    size_t height;
+} IterationHistory;
+
+size_t iterationCount = 0;
+IterationHistory* history = NULL;
+
+
+void freeHistory(IterationHistory* history, size_t count, size_t width) {
+    for (size_t i = 0; i < count; i++) {
+        for (size_t j = 0; j < width; j++) {
+            free(history[i].matrix[j]);
+        }
+        free(history[i].matrix);
+    }
+    free(history);
+}
 
 void displayMatrix(Element** matrix, size_t width, size_t height) {
   for (size_t i = 0; i < height; i++) {
@@ -23,16 +46,12 @@ void displayMatrix(Element** matrix, size_t width, size_t height) {
       printf("%c", matrix[i][j].symbol);
       resetColor();
     }
-    // DEBUG ONLY
-    printf("%s", SPACER);
-    for (size_t j = 0; j < width; j++) {
-      printf("%d", matrix[i][j].degree);
+    // Display the previous iteration of the matrix if available
+    if (iterationCount > 0) {
+      for (size_t j = 0; j < width; j++) {
+        printf("%c", history[iterationCount - 1].matrix[i][j].symbol);
+      }
     }
-    printf("%s", SPACER);
-    for (size_t j = 0; j < width; j++) {
-      printf("%d", matrix[i][j].state);
-    }
-    // END DEBUG
     printf("\n");
   }
   // DEBUG ONLY
@@ -41,6 +60,7 @@ void displayMatrix(Element** matrix, size_t width, size_t height) {
   // END DEBUG
   printf("\n");
 }
+
 
 void initializeMatrix(Element** matrix, size_t width, size_t height) {
   for (size_t i = 0; i < height; i++) {
@@ -110,7 +130,6 @@ void userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPo
       // TODO: add possibility to modify grid
     case 3:
       // TODO:  add possibility to rollback
-      break;
     case 4:
       // TODO: IMPLEMENT dijkstra here
       break;
@@ -195,38 +214,124 @@ void getUserInputForSize(int *width, int *height) {
     *height = (rand() % (MAX_HEIGHT - MIN_HEIGHT + 1)) + MIN_HEIGHT;
   }
 }
-
 int randomForestCreation() {
-  Element** forestMatrix = NULL;
-  srand(time(NULL));
-  int gridWidth, gridHeight;
-  getUserInputForSize(&gridWidth, &gridHeight);
-  Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
-  if (!listPointsOnFire) {
-    fprintf(stderr, "%s", ERROR_MEMORY);
-    return 1;
-  }
-  forestMatrix = (Element**)malloc(gridHeight * sizeof(Element*));
-  if (forestMatrix == NULL) {
-    fprintf(stderr, "%s", ERROR_MEMORY);
-    free(listPointsOnFire);
-    return 1;
-  }
-  // FUTUR matrix returning
-  initializeMatrix(forestMatrix, gridWidth, gridHeight);
+    srand(time(NULL));
+    int gridWidth, gridHeight;
+    getUserInputForSize(&gridWidth, &gridHeight);
+    Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
+    if (!listPointsOnFire) {
+        fprintf(stderr, "%s", ERROR_MEMORY);
+        return 1;
+    }
+    Element** forestMatrix = (Element**)malloc(gridHeight * sizeof(Element*));
+    if (forestMatrix == NULL) {
+        fprintf(stderr, "%s", ERROR_MEMORY);
+        free(listPointsOnFire);
+        return 1;
+    }
+    initializeMatrix(forestMatrix, gridWidth, gridHeight);
 
-  // Todo: make another function with elements below
-  do {
-      getRandomPosition(&randomX, &randomY, gridWidth, gridHeight);
-  } while (forestMatrix[randomY][randomX].degree == 0);
-  size_t pointIndex = 0;
-  listPointsOnFire[pointIndex].x = randomX;
-  listPointsOnFire[pointIndex].y = randomY;
-  pointIndex++;
-  displayMatrix(forestMatrix, gridWidth, gridHeight);
-  bool displayMenu = true;
-  processFireSpread(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex, &displayMenu);
-  free(listPointsOnFire);
-  freeMatrix(forestMatrix, gridHeight);
-  return 0;
+    unsigned short randomX, randomY;
+    getRandomPosition(&randomX, &randomY, gridWidth, gridHeight);
+
+    size_t pointIndex = 0;
+    listPointsOnFire[pointIndex].x = randomX;
+    listPointsOnFire[pointIndex].y = randomY;
+    pointIndex++;
+
+    displayMatrix(forestMatrix, gridWidth, gridHeight);
+    bool displayMenu = true;
+    size_t iterationCount = 0;
+
+    IterationHistory* history = (IterationHistory*)malloc(MAX_ITERATIONS * sizeof(IterationHistory));
+    if (history == NULL) {
+        fprintf(stderr, "%s", ERROR_MEMORY);
+        free(listPointsOnFire);
+        freeMatrix(forestMatrix, gridHeight);
+        return 1;
+    }
+
+    size_t newPointsOnFire;  // Ajout de la déclaration manquante
+    do {
+        size_t currentPointIndex = 0;
+        newPointsOnFire = 0;  // Initialisation de la variable
+        size_t numberOfPointsOnFire = pointIndex;
+
+        if (displayMenu) {
+            userMenu(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex, &numberOfPointsOnFire, &displayMenu);
+        }
+
+        if (iterationCount < MAX_ITERATIONS) {
+            history[iterationCount].matrix = malloc(gridHeight * sizeof(Element*));
+            for (size_t i = 0; i < gridHeight; i++) {
+                history[iterationCount].matrix[i] = malloc(gridWidth * sizeof(Element));
+                for (size_t j = 0; j < gridWidth; j++) {
+                    history[iterationCount].matrix[i][j] = forestMatrix[i][j];
+                }
+            }
+            history[iterationCount].width = gridWidth;
+            history[iterationCount].height = gridHeight;
+        }
+
+        iterationCount++;
+
+        initFire(randomX, randomY, forestMatrix);
+        displayMatrix(forestMatrix, gridWidth, gridHeight);
+
+        while (currentPointIndex < numberOfPointsOnFire) {
+            Point p = listPointsOnFire[currentPointIndex];
+            if (forestMatrix[p.y][p.x].degree > 0) {
+                size_t oldPointIndex = pointIndex;
+                setFire(p.x, p.y, gridWidth, gridHeight, forestMatrix, listPointsOnFire, &pointIndex);
+                if (pointIndex > oldPointIndex) {
+                    newPointsOnFire += (pointIndex - oldPointIndex);
+                }
+            }
+            currentPointIndex++;
+        }
+
+        for (size_t i = 0; i < numberOfPointsOnFire; i++) {
+            Point p = listPointsOnFire[i];
+            if (forestMatrix[p.y][p.x].degree > 0) {
+                forestMatrix[p.y][p.x].degree--;
+                if (forestMatrix[p.y][p.x].degree == 0) {
+                    forestMatrix[p.y][p.x].symbol = '@';  
+                }
+            }
+        }
+
+        if (newPointsOnFire == 0) {
+            for (size_t i = 0; i < pointIndex; i++) {
+                if (forestMatrix[listPointsOnFire[i].y][listPointsOnFire[i].x].degree > 0) {
+                    newPointsOnFire++;
+                }
+            }
+        }
+    } while (newPointsOnFire > 0);
+
+    printf("La propagation du feu est terminée après %ld itérations.\n", iterationCount);
+
+    printf("Voulez-vous voir les anciennes itérations ? (O/n): ");
+    char userChoice;
+    scanf(" %c", &userChoice);
+
+    if (userChoice == 'o' || userChoice == 'O') {
+        for (size_t i = 0; i < iterationCount; i++) {
+            printf("Ancienne itération %ld :\n", i + 1);
+            displayMatrix(history[i].matrix, gridWidth, gridHeight);
+        }
+    }
+
+    for (size_t i = 0; i < iterationCount && i < MAX_ITERATIONS; i++) {
+        for (size_t j = 0; j < gridHeight; j++) {
+            free(history[i].matrix[j]);
+        }
+        free(history[i].matrix);
+    }
+    free(history);
+
+    free(listPointsOnFire);
+    freeMatrix(forestMatrix, gridHeight);
+
+    return 0;
 }
