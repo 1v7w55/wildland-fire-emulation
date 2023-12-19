@@ -115,7 +115,6 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
 }
 
 void menu_dijkstra(Element** grid,int height, int width) {
-
     // noeud source et noeud destination
     int srcH, srcW, destH, destW;
     printf("Votre grille actuel est :\n");
