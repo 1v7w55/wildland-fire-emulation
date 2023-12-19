@@ -8,7 +8,6 @@ void save_grid(Element** matrix,int height, int width){
     printf("Nom de la sauvegarede :");
     scanf("%s",nomFichier);
     if (chdir("./saves") != 0) perror("chdir() to /save failed"); 
-        
     FILE *fichier = fopen(nomFichier, "w");
     if (fichier != NULL) {
       fprintf(fichier, "%d %d\n", height, width);
@@ -22,7 +21,6 @@ void save_grid(Element** matrix,int height, int width){
         }
     fclose(fichier);
     printf("Le fichier a bien été enregistré dans le dossier save.\n");
-
     }
     else{
         printf("Une erreur est sur venue. La sauvegarde n'a pas fonctionné.\n");
