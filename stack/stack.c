@@ -74,12 +74,12 @@ void freeStackElement(stack *element, size_t height) {
 }
 
 int countStackElements(stack *s) {
-    int count = 0;
-    while (s != NULL) {
-        count++;
-        s = s->prec;  
-    }
-    return count;
+	int count = 0;
+	while (s != NULL) {
+		count++;
+		s = s->prec;  
+	}
+	return count;
 }
 
 void restoreStateFromStackElement(Element ***map, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex, stack *element) {
