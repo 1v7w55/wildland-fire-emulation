@@ -81,6 +81,20 @@ void setFire(int randomX, int randomY, size_t width, size_t height, Element** fo
   }
 }
 
+void initFire(Element** forestMatrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex) {
+  do {
+      getRandomPosition(&randomX, &randomY, width, height);
+  } while (forestMatrix[randomY][randomX].degree == 0);
+
+  if (forestMatrix[randomY][randomX].state != 1) {
+      forestMatrix[randomY][randomX].state = 1;
+      checkAsh(forestMatrix, randomX, randomY);
+      pointOnFire(listPointsOnFire, pointIndex, randomX, randomY);
+  }
+
+  displayMatrix(forestMatrix, width, height);
+}
+
 int userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex, bool* displayMenu, stack **forestStack) {
   int userChoice;
 
@@ -137,55 +151,56 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
   int userChoice = 0; 
   bool isFireInitialized = false; 
   bool fireSpreadCompleted = false;
-
+  
   do {
-    currentPointIndex = 0;
-    newPointsOnFire = 0;
-    size_t numberOfPointsOnFire = *pointIndex;
+    if (!isFireInitialized) {
+      userChoice = userMenu(forestMatrix, width, width, listPointsOnFire, pointIndex, displayMenu, &forestStack);
+      initFire(forestMatrix, width, width, listPointsOnFire, pointIndex);
+      push(forestMatrix, width, height, listPointsOnFire, *pointIndex);
+      isFireInitialized = true;
+    } else {
+      currentPointIndex = 0;
+      newPointsOnFire = 0;
+      size_t numberOfPointsOnFire = *pointIndex;
+      if (*displayMenu) {
+        userChoice = userMenu(forestMatrix, width, width, listPointsOnFire, pointIndex, displayMenu, &forestStack);
 
-    if (*displayMenu) {
-      userChoice = userMenu(forestMatrix, width, height, listPointsOnFire, pointIndex, displayMenu, &forestStack);
-
-      if (userChoice == 3) {
-        if (forestStack != NULL) {
-          pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
-          displayMatrix(forestMatrix, width, height);
-          hasUserRolledBack = true;
-        } else {
-          pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
-        }
-      }
-    }
-
-    if (!fireSpreadCompleted && (userChoice == 1 || userChoice == 5)) {
-      if (!isFireInitialized) {
-        size_t randomX, randomY;
-        getRandomPosition(&randomX, &randomY, width, height);
-        isFireInitialized = true;
-      }
-      while (currentPointIndex < numberOfPointsOnFire) {
-        Point p = listPointsOnFire[currentPointIndex];
-        if (forestMatrix[p.y][p.x].degree > 0) {
-          size_t oldPointIndex = *pointIndex;
-          setFire(p.x, p.y, width, height, forestMatrix, listPointsOnFire, pointIndex);
-          if (*pointIndex > oldPointIndex) {
-            newPointsOnFire += (*pointIndex - oldPointIndex);
+        if (userChoice == 3) {
+          if (forestStack != NULL) {
+            pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
+            displayMatrix(forestMatrix, width, height);
+            hasUserRolledBack = true;
+          } else {
+            pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
           }
         }
-        currentPointIndex++;
       }
-      checkExtinctAsh(forestMatrix, listPointsOnFire, pointIndex);
-      displayMatrix(forestMatrix, width, height);
-      push(forestMatrix, width, height, listPointsOnFire, *pointIndex);
-    }
 
-    if (newPointsOnFire == 0) {
-      fireSpreadCompleted = true;
-      *displayMenu=true;
-      for (size_t i = 0; i < *pointIndex; i++) {
-        if (forestMatrix[listPointsOnFire[i].y][listPointsOnFire[i].x].degree > 0) {
-          newPointsOnFire++;
-          fireSpreadCompleted = false;
+      if (!fireSpreadCompleted && (userChoice == 1 || userChoice == 5)) {
+        while (currentPointIndex < numberOfPointsOnFire) {
+          Point p = listPointsOnFire[currentPointIndex];
+          if (forestMatrix[p.y][p.x].degree > 0) {
+            size_t oldPointIndex = *pointIndex;
+            setFire(p.x, p.y, width, height, forestMatrix, listPointsOnFire, pointIndex);
+            if (*pointIndex > oldPointIndex) {
+              newPointsOnFire += (*pointIndex - oldPointIndex);
+            }
+          }
+          currentPointIndex++;
+        }
+        checkExtinctAsh(forestMatrix, listPointsOnFire, pointIndex);
+        displayMatrix(forestMatrix, width, height);
+        push(forestMatrix, width, height, listPointsOnFire, *pointIndex);
+      }
+
+      if (newPointsOnFire == 0) {
+        fireSpreadCompleted = true;
+        *displayMenu=true;
+        for (size_t i = 0; i < *pointIndex; i++) {
+          if (forestMatrix[listPointsOnFire[i].y][listPointsOnFire[i].x].degree > 0) {
+            newPointsOnFire++;
+            fireSpreadCompleted = false;
+          }
         }
       }
     }
@@ -229,15 +244,7 @@ int randomForestCreation() {
 
   initializeMatrix(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex);
 
-  size_t randomX, randomY;
-  do {
-    getRandomPosition(&randomX, &randomY, gridWidth, gridHeight);
-  } while (forestMatrix[randomY][randomX].degree == 0);
-
   size_t pointIndex = 0;
-  listPointsOnFire[pointIndex].x = randomX;
-  listPointsOnFire[pointIndex].y = randomY;
-  pointIndex++;
 
   displayMatrix(forestMatrix, gridWidth, gridHeight);
 
