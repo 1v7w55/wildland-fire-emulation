@@ -37,7 +37,6 @@ void displayMatrix(Element** matrix, size_t width, size_t height) {
     // END DEBUG
     printf("\n");
   }
-  // END DEBUG
   printf("\n");
 }
 
@@ -102,11 +101,8 @@ int userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPoi
       break;
    case 3: 
       if (*forestStack != NULL && countStackElements(*forestStack) >= 2) {
-        popSecondLast(&forestMatrix, width, height, listPointsOnFire, pointIndex);
-        displayMatrix(forestMatrix, width, height);
+        pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
         hasUserRolledBack = true;
-      } else {
-        printf("Rollback non disponible.\n");
       }
       break;
     case 4:
@@ -135,7 +131,6 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
   size_t newPointsOnFire;
   int userChoice = 0; 
   bool isFireInitialized = false; 
-  size_t randomX, randomY;
   bool fireSpreadCompleted = false;
 
   do {
@@ -146,19 +141,22 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
     if (*displayMenu) {
       userChoice = userMenu(forestMatrix, width, height, listPointsOnFire, pointIndex, displayMenu, &forestStack);
 
-      if (userChoice == 1 || (userChoice == 3 && (forestStack == NULL || countStackElements(forestStack) < 2))) {
-        fireSpreadCompleted = false;
-        if (userChoice == 3) {
-          printf("Rollback non disponible.\n");
+      if (userChoice == 3) {
+        if (forestStack != NULL) {
+          pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
+          displayMatrix(forestMatrix, width, height);
+          hasUserRolledBack = true;
+        } else {
+          pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
         }
       }
     }
 
     if (!fireSpreadCompleted && (userChoice == 1 || userChoice == 5)) {
       if (!isFireInitialized) {
+        size_t randomX, randomY;
         getRandomPosition(&randomX, &randomY, width, height);
         isFireInitialized = true;
-        fireSpreadCompleted=false;
       }
       while (currentPointIndex < numberOfPointsOnFire) {
         Point p = listPointsOnFire[currentPointIndex];
@@ -178,16 +176,14 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
 
     if (newPointsOnFire == 0) {
       fireSpreadCompleted = true;
+      *displayMenu=true;
       for (size_t i = 0; i < *pointIndex; i++) {
         if (forestMatrix[listPointsOnFire[i].y][listPointsOnFire[i].x].degree > 0) {
           newPointsOnFire++;
           fireSpreadCompleted = false;
-          *displayMenu=true;
         }
       }
     }
-
-    hasUserRolledBack = false; 
   } while (!fireSpreadCompleted || userChoice != 6);
 }
 
