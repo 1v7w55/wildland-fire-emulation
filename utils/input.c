@@ -169,6 +169,7 @@ int manualForestCreation(){
   setFire(0, 0, gridWidth, gridHeight, forestMatrix, points, &pointIndex);
   // To do: change var declaration because it's useless
   bool displayMenu = true;
+  fireSpreadStep = 0;
   processFireSpread(forestMatrix, gridWidth, gridHeight, points, &pointIndex, &displayMenu);
   return 0;
 }
