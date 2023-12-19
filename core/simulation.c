@@ -83,13 +83,13 @@ void setFire(int randomX, int randomY, size_t width, size_t height, Element** fo
 
 void initFire(Element** forestMatrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex) {
   do {
-      getRandomPosition(&randomX, &randomY, width, height);
+    getRandomPosition(&randomX, &randomY, width, height);
   } while (forestMatrix[randomY][randomX].degree == 0);
 
   if (forestMatrix[randomY][randomX].state != 1) {
-      forestMatrix[randomY][randomX].state = 1;
-      checkAsh(forestMatrix, randomX, randomY);
-      pointOnFire(listPointsOnFire, pointIndex, randomX, randomY);
+    forestMatrix[randomY][randomX].state = 1;
+    checkAsh(forestMatrix, randomX, randomY);
+    pointOnFire(listPointsOnFire, pointIndex, randomX, randomY);
   }
 
   displayMatrix(forestMatrix, width, height);
@@ -274,7 +274,7 @@ void pointOnFire(Point* listPointsOnFire, size_t* pointIndex,int x,int y){
   return;
 }
 
-//Fonction de mofication de grille
+//Fonction de modifcation de grille
 void modifyGridElement(Element** forestMatrix, size_t width, size_t height,  Point* listPointsOnFire, size_t* pointIndex){
   printf("Votre grille actuelle est :\n");
   displayMatrix(forestMatrix, width, height);
