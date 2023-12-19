@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <stdbool.h>
 #include <string.h>
 
 /**
@@ -101,9 +100,14 @@ int userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPoi
     case 2:
       modifyGridElement(forestMatrix, width, height, listPointsOnFire, pointIndex);
       break;
-    case 3: 
-      popSecondLast(&forestMatrix, width, height, listPointsOnFire, pointIndex);
-      displayMatrix(forestMatrix, width, height);
+   case 3: 
+      if (*forestStack != NULL && countStackElements(*forestStack) >= 2) {
+        popSecondLast(&forestMatrix, width, height, listPointsOnFire, pointIndex);
+        displayMatrix(forestMatrix, width, height);
+        hasUserRolledBack = true;
+      } else {
+        printf("Rollback non disponible.\n");
+      }
       break;
     case 4:
       menu_dijkstra(forestMatrix, height, width);
@@ -136,17 +140,25 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
 
   do {
     currentPointIndex = 0;
-    newPointsOnFire = 0;  
+    newPointsOnFire = 0;
     size_t numberOfPointsOnFire = *pointIndex;
 
     if (*displayMenu) {
       userChoice = userMenu(forestMatrix, width, height, listPointsOnFire, pointIndex, displayMenu, &forestStack);
+
+      if (userChoice == 1 || (userChoice == 3 && (forestStack == NULL || countStackElements(forestStack) < 2))) {
+        fireSpreadCompleted = false;
+        if (userChoice == 3) {
+          printf("Rollback non disponible.\n");
+        }
+      }
     }
 
-    if (userChoice == 1 || userChoice == 5) {
+    if (!fireSpreadCompleted && (userChoice == 1 || userChoice == 5)) {
       if (!isFireInitialized) {
         getRandomPosition(&randomX, &randomY, width, height);
         isFireInitialized = true;
+        fireSpreadCompleted=false;
       }
       while (currentPointIndex < numberOfPointsOnFire) {
         Point p = listPointsOnFire[currentPointIndex];
@@ -169,15 +181,14 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
       for (size_t i = 0; i < *pointIndex; i++) {
         if (forestMatrix[listPointsOnFire[i].y][listPointsOnFire[i].x].degree > 0) {
           newPointsOnFire++;
+          fireSpreadCompleted = false;
+          *displayMenu=true;
         }
       }
     }
-  } while (newPointsOnFire > 0 && userChoice != 6);
 
-  while(fireSpreadCompleted && userChoice != 6) {
-    printf("Le feu a fini de se propager. Que voulez-vous faire?\n");
-    userChoice = userMenu(forestMatrix, width, height, listPointsOnFire, pointIndex, displayMenu, &forestStack);
-  }
+    hasUserRolledBack = false; 
+  } while (!fireSpreadCompleted || userChoice != 6);
 }
 
 void getUserInputForSize(int *width, int *height) {

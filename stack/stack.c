@@ -55,11 +55,11 @@ void pop(Element ***map, size_t width, size_t height, Point* listPointsOnFire, s
 }
 
 void popSecondLast(Element ***map, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex) {
+	fireSpreadCompleted = false;
 	if (!forestStack || !forestStack->prec) {
 		printf("La pile est vide.\n");
 		return;
-	}
-
+	} 
 	stack *topElement = forestStack;
 	forestStack = forestStack->prec;
 	freeStackElement(topElement, height);
@@ -84,6 +84,14 @@ void freeStackElement(stack *element, size_t height) {
 	free(element);
 }
 
+int countStackElements(stack *s) {
+    int count = 0;
+    while (s != NULL) {
+        count++;
+        s = s->prec;  
+    }
+    return count;
+}
 
 void restoreStateFromStackElement(Element ***map, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex, stack *element) {
 	if (!element) {

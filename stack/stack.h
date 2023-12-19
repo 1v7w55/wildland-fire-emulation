@@ -19,5 +19,6 @@ void pop(Element ***map, size_t width, size_t height, Point* listPointsOnFire, s
 void popSecondLast(Element ***map, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex);
 void freeStackElement(stack *element, size_t height);
 void restoreStateFromStackElement(Element ***map, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex, stack *element);
+int countStackElements(stack *s);
 
 #endif
