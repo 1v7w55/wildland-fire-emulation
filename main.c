@@ -35,12 +35,22 @@ void displayLogo() {
     printf("██║███╗██║██║██║     ██║  ██║██║     ██╔══██║██║╚██╗██║██║  ██║    ██╔══╝  ██║██╔══██╗██╔══╝  \n");
     printf("╚███╔███╔╝██║███████╗██████╔╝███████╗██║  ██║██║ ╚████║██████╔╝    ██║     ██║██║  ██║███████╗\n");
     printf(" ╚══╝╚══╝ ╚═╝╚══════╝╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝     ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝\n");
-    printf("\n");
+}
+
+void afficherBienvenue() {
+    printf("╔═════════════════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║  Bienvenue sur notre projet d'émulation d'incendie, \"Wildland Fire Emulation\".              ║\n");
+    printf("║  Ce projet consiste à simuler la propagation d'un incendie au sein d'un milieu forestier,   ║\n");
+    printf("║  où chaque parcelle représente différents éléments tels que: de l'herbe, un arbre,          ║\n");
+    printf("║  de la pierre, de l'eau, de la feuille, etc...                                              ║\n");
+    printf("║  Choisissez votre génération préférée !                                                     ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════════════════╝\n");
 }
 
 int main() {
     srand(time(NULL)); 
     displayLogo();
+    afficherBienvenue();
     menu();
     return 0;
 }
