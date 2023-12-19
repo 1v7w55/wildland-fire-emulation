@@ -147,6 +147,7 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
 
       if (userChoice == 3) {
         if (forestStack != NULL) {
+          if (fireSpreadStep > 0) fireSpreadStep--;
           pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
           displayStep(fireSpreadStep);
           displayMatrix(forestMatrix, width, height);
