@@ -18,7 +18,7 @@ Node creeNode(int row, int col) {
 
 // Verifie si les coordonees sont dans la grilles
 int isValid(int row, int col, int height,int width) {
-    return (row >= 0) && (row < height) && (col >= 0) && (col < width);
+    return ((row >= 0) && (row < height) && (col >= 0) && (col < width));
 }
 
 // Algo de dijkstra
@@ -68,7 +68,6 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
         }
     }
     // Toute les distances a max et les vistes a 0
-
     dist[src.row][src.col] = 0;
     // dist de src a src =0
 
@@ -77,21 +76,20 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
         Node u;
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                if (vu[i][j] == 0 && dist[i][j] < minDist) {
+                if ((vu[i][j]==0) && (dist[i][j] < minDist)) {
                     minDist = dist[i][j];
                     u = creeNode(i, j);
                 }
             }
         }
         vu[u.row][u.col] = 1;
-
         // Modif de la dist des noeuds adjacent au notre
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 if (isValid(u.row + i, u.col + j, height, width) &&
-                    vu[u.row + i][u.col + j] == 0 &&
-                    dist[u.row][u.col] != INT_MAX &&
-                    dist[u.row][u.col] + 1 < dist[u.row + i][u.col + j]
+                    (vu[u.row + i][u.col + j] == 0) &&
+                    (dist[u.row][u.col] != INT_MAX) &&
+                    (dist[u.row][u.col] + 1 < dist[u.row + i][u.col + j])
                     ) {
                         Element *adjacentCell = &grid[u.row + i][u.col + j];
                         if (adjacentCell->degree > 0){
@@ -115,23 +113,6 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
     free(vu);
     free(pre);
 }
-/*
-int debug_dijkstra() {
-    int height,width;
-    Element** grid = loadGridFromFile("test66", &height, &width);
-
-    // noeud source et noeud destination
-    int srcH,srcW,destH,destW =0;
-    scanf("%d %d",&srcH,&srcW);
-    scanf("%d %d",&destH,&destW);
-    Node src = creeNode(srcH, srcW);
-    Node dest = creeNode(destH, destW);
-    displayMatrix(grid, width, height);
-
-    dijkstra(grid,height, width, src, dest);
-
-    return 0;
-}*/
 
 void menu_dijkstra(Element** grid,int height, int width) {
 
@@ -160,7 +141,7 @@ void display_way(Element** matrix, size_t width, size_t height, Node* pre, Node 
         chemin[dest.row * width + dest.col] = 1;
         dest = pre[dest.row * width + dest.col];
     }
-    printf("\nLes espaces sont représenté par %s pour mieux voir le chemin.\n","%");
+    printf("\nLes espaces sont représenté par %s pour mieux voir le chemin.\n\n","%");
     for (size_t i = 0; i < height; i++) {
         for (size_t j = 0; j < width; j++) {
             if (chemin[i * width + j] == 1) {
