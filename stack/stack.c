@@ -31,21 +31,24 @@ void push(Element **map, size_t width, size_t height, Point* listPointsOnFire, s
 }
 
 void pop(Element ***map, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex) {
-    if (!forestStack || !forestStack->prec) {
-        printf("Il reste un élément dans la liste, il ne peut pas être supprimé.\n");
-        return;
-    }
+	if (!forestStack || !forestStack->prec) {
+		printf("Il reste un élément dans la liste, il ne peut pas être supprimé.\n");
+		listPointsOnFire[*pointIndex].x = randomX;
+		listPointsOnFire[*pointIndex].y = randomY;
+		(*pointIndex)++;
+		return;
+	}
 
-    stack *toPop = forestStack;
-    forestStack = toPop->prec;
+	stack *toPop = forestStack;
+	forestStack = toPop->prec;
 
-    for (size_t i = 0; i < height; i++) {
-        memcpy((*map)[i], toPop->adresseCarte[i], width * sizeof(Element));
-        free(toPop->adresseCarte[i]);
-    }
+	for (size_t i = 0; i < height; i++) {
+		memcpy((*map)[i], toPop->adresseCarte[i], width * sizeof(Element));
+		free(toPop->adresseCarte[i]);
+	}
 
-    memcpy(listPointsOnFire, toPop->tabCoordFeu, toPop->nbFlames * sizeof(Point));
-    *pointIndex = toPop->nbFlames;
+	memcpy(listPointsOnFire, toPop->tabCoordFeu, toPop->nbFlames * sizeof(Point));
+	*pointIndex = toPop->nbFlames;
 
 	/*
 	if (fireSpreadStep > 0) {
@@ -54,10 +57,13 @@ void pop(Element ***map, size_t width, size_t height, Point* listPointsOnFire, s
 		}*/
     //fireSpreadStep = toPop->iteration;
 
-    free(toPop->adresseCarte);
-    free(toPop->tabCoordFeu);
-    free(toPop);
+	free(toPop->adresseCarte);
+	free(toPop->tabCoordFeu);
+	free(toPop);
 
+	listPointsOnFire[*pointIndex].x = randomX;
+	listPointsOnFire[*pointIndex].y = randomY;
+	(*pointIndex)++;
 }
 
 void freeStackElement(stack *element, size_t height) {
@@ -73,12 +79,12 @@ void freeStackElement(stack *element, size_t height) {
 }
 
 int countStackElements(stack *s) {
-    int count = 0;
-    while (s != NULL) {
-        count++;
-        s = s->prec;  
-    }
-    return count;
+	int count = 0;
+	while (s != NULL) {
+		count++;
+		s = s->prec;  
+	}
+	return count;
 }
 
 void restoreStateFromStackElement(Element ***map, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex, stack *element) {

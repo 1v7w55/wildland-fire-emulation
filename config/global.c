@@ -7,7 +7,6 @@ const size_t MIN_HEIGHT = 4;
 
 size_t gridWidth, gridHeight;
 size_t pointIndex, fireSpreadStep;
-size_t randomX, randomY;
 
 size_t iterationCounter;
 Element** forestMatrix = NULL;
