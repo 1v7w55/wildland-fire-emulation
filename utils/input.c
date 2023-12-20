@@ -3,6 +3,7 @@
 #include "../utils/input.h"
 #include "../config/global.h"
 #include "../core/simulation.h"
+#include "../stack/stack.h"
 #include "display.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -91,25 +92,26 @@ int createElementArray(){
   scanf("%d %d",&height,&width);
   //printf("\n");
   //Initialize a pointer pointer
-  Element** tab = NULL;
+  Element** forestMatrix = NULL;
   //Allocate the necessary memory to it
-  tab = ( Element **) malloc(height * sizeof( Element*));
-  if(tab == NULL) {
+  forestMatrix = ( Element **) malloc(height * sizeof( Element*));
+  Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * height * width);
+  if(forestMatrix == NULL) {
     return -1;
   }
   for(int ligne = 0;ligne < height;ligne++) {
     Element* line = NULL;
     line = (Element*) malloc(width * sizeof(Element));
     if(line == NULL) {
-      free(tab);
+      free(forestMatrix);
       return -2;
     }
-    *(tab + ligne) = line;
+    *(forestMatrix + ligne) = line;
     char * reader = NULL;
     reader = (char*) malloc((width + 1) * sizeof(char*));
     //Add one to the width because of the last char of every string '\0'
     if(reader == NULL) {
-      free(tab);
+      free(forestMatrix);
       return -3;
     }
     fgets(reader, width, stdin);
@@ -119,11 +121,33 @@ int createElementArray(){
       Element character = detectionElement(*(reader + colonne));
       //check the error code
       if (character.symbol != '!'){
-        tab[ligne][colonne] = character ;
+        forestMatrix[ligne][colonne] = character ;
       }
     }
     free(reader);
   }
+  printf("\n");
+  size_t pointIndex = 0;
+  do {
+    getRandomPosition(&randomX, &randomY, width, height);
+  } while (forestMatrix[randomY][randomX].degree == 0);
+
+  listPointsOnFire[pointIndex].x = randomX;
+  listPointsOnFire[pointIndex].y = randomY;
+  pointIndex++;
+
+  fireSpreadStep=0;
+  displayMatrix(forestMatrix, width, height);
+  displayStep(fireSpreadStep);
+
+  push(forestMatrix, width, height, listPointsOnFire, pointIndex);
+  bool displayMenu = true;
+  processFireSpread(forestMatrix, width, height, listPointsOnFire, &pointIndex, &displayMenu);
+
+  while (forestStack != NULL) {
+    pop(&forestMatrix, width, height, listPointsOnFire, &pointIndex);
+  }
+  free(listPointsOnFire);
   return 0;
 }
 
