@@ -79,7 +79,9 @@ void loadGrid() {
     listPointsOnFire[pointIndex].y = randomY;
     pointIndex++;
 
+    fireSpreadStep=0;
     displayMatrix(forestMatrix, width, height);
+    displayStep(fireSpreadStep);
 
     push(forestMatrix, width, height, listPointsOnFire, pointIndex);
     bool displayMenu = true;
