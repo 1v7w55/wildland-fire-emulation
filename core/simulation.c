@@ -106,7 +106,6 @@ int userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPoi
    case 3: 
       if (*forestStack != NULL && countStackElements(*forestStack) >= 2) {
         pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
-        hasUserRolledBack = true;
       }
       break;
     case 4:
@@ -148,10 +147,12 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
       if (userChoice == 3) {
         if (forestStack != NULL) {
           if (fireSpreadStep > 0) fireSpreadStep--;
-          pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
+          if (hasUserRolledBack == false){
+            pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
+            hasUserRolledBack = true;
+          }
           displayStep(fireSpreadStep);
           displayMatrix(forestMatrix, width, height);
-          hasUserRolledBack = true;
         } else {
           pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
         }
@@ -252,6 +253,8 @@ int randomForestCreation() {
   processFireSpread(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex, &displayMenu);
 
   while (forestStack != NULL) {
+    printf("e");
+
     pop(&forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex);
   } 
 
