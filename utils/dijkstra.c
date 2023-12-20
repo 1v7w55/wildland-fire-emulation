@@ -22,7 +22,7 @@ int isValid(int row, int col, int height,int width) {
 }
 
 // Algo de dijkstra
-void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
+void dijkstra(Element** grid,int height, int width, Node src, Node dest, char mode) {
     int** dist = NULL;
     dist = ( int **) malloc(height * sizeof( int*));
     if(dist == NULL) {
@@ -71,6 +71,9 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
     dist[src.row][src.col] = 0;
     // dist de src a src =0
 
+    //
+    int defaultburn = grid[src.row][src.col].degree;
+
     for (int count = 0; count < height * width - 1; count++){
         int minDist = INT_MAX;
         Node u;
@@ -94,21 +97,28 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
                         Element *adjacentCell = &grid[u.row + i][u.col + j];
                         if (adjacentCell->degree > 0){
                             dist[u.row + i][u.col + j] = dist[u.row][u.col] + 1;
+                            if ( dist[u.row + i][u.col + j] + grid[u.row + i][u.col + j].degree > defaultburn){
+                                defaultburn = dist[u.row + i][u.col + j] + grid[u.row + i][u.col + j].degree;
+                            }
                             pre[(u.row + i) * width + (u.col + j)] = u;
                         }
                 }
             }
         }
-    }    
-
-    if (dist[dest.row][dest.col] != INT_MAX){
-        printf("Points du plus court chemin entre (%d, %d) et (%d, %d):\n", dest.row, dest.col, src.row, src.col);
-        display_way(grid,height, width,pre,dest);
-        printf("\nLa distance minimale depuis (%d, %d) à (%d, %d) est : %d\n", dest.row, dest.col,src.row, src.col, dist[dest.row][dest.col]);
     }
+    if (mode == 'B') printf("La carte sera totalement au brulée au bout de %d itération.\n",defaultburn-1);
     else{
-        printf("\nIl est impossible de rejoindre les 2 points avec un chemin de feu\n");
+        if (dist[dest.row][dest.col] != INT_MAX){
+            printf("Points du plus court chemin entre (%d, %d) et (%d, %d):\n", dest.row, dest.col, src.row, src.col);
+            display_way(grid,height, width,pre,dest);
+            printf("\nLa distance minimale depuis (%d, %d) à (%d, %d) est : %d\n", dest.row, dest.col,src.row, src.col, dist[dest.row][dest.col]);
+        }
+        else{
+            printf("\nIl est impossible de rejoindre les 2 points avec un chemin de feu\n");
+        }
+
     }
+
     free(dist);
     free(vu);
     free(pre);
@@ -116,6 +126,7 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
 
 void menu_dijkstra(Element** grid,int height, int width) {
     // noeud source et noeud destination
+
     int srcH, srcW, destH, destW;
     printf("Votre grille actuel est :\n");
     displayMatrix(grid, width, height);
@@ -132,8 +143,8 @@ void menu_dijkstra(Element** grid,int height, int width) {
 
     Node src = creeNode(srcH, srcW);
     Node dest = creeNode(destH, destW);
-
-    dijkstra(grid, height, width, src, dest);
+    
+    dijkstra(grid, height, width, src, dest, 'W');
 }
 
 void display_way(Element** matrix, size_t width, size_t height, Node* pre, Node dest) {
@@ -165,4 +176,20 @@ void display_way(Element** matrix, size_t width, size_t height, Node* pre, Node 
         printf("\n");
     }
     free(chemin);
+}
+
+void burn_predict(Element** grid,int height, int width) {
+    int srcH, srcW;
+    printf("Votre grille actuel est :\n");
+    displayMatrix(grid, width, height);
+
+    do {
+        printf("Quel sont les coordonnées du premier point de feu? (Sous la forme \"X Y\")\n");
+        scanf("%d %d", &srcH, &srcW);
+    } while(srcH < 0 || srcH >= height || srcW < 0 || srcW >= width);
+
+    Node src = creeNode(srcH, srcW);
+    Node dest = creeNode(0, 0);
+    
+    dijkstra(grid, height, width, src, dest, 'B');
 }
