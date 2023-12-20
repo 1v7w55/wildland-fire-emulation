@@ -109,7 +109,8 @@ int userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPoi
   printf("4. Trouver la distance entre deux points\n");
   printf("5. Aller directement à la fin de la propagation du feu.\n");
   printf("6. Sauvgarder la partie dans un fichier.\n");
-  printf("7. Quitter la simulation\n");
+  printf("7. Sauvgarder la partie dans un fichier.\n");
+  printf("8. Quitter la simulation\n");
   scanf("%d", &userChoice);
 
   switch(userChoice) {
@@ -134,6 +135,9 @@ int userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPoi
       save_grid(forestMatrix, height, width);
       break;
     case 7:
+      burn_predict(forestMatrix, height, width);
+      break;
+    case 8:
       printf("Etes-vous sur de vouloir quitter la partie ? (y/N) ");
       char confirmQuit;
       scanf(" %c", &confirmQuit); 
@@ -212,7 +216,7 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
         }
       }
     }
-  } while (!fireSpreadCompleted || userChoice != 7);
+  } while (!fireSpreadCompleted || userChoice != 8);
 }
 
 void getUserInputForSize(int *width, int *height) {
