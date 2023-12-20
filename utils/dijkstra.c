@@ -106,22 +106,6 @@ int dijkstra(Element** grid,int height, int width, Node src, Node dest, char mod
         }
     }
     if (mode == 'B'){
-        /*
-        printf("La carte sera totalement au brulée au bout de %d itération.\n",defaultburn-1);
-        
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if ( dist[i][j] != INT_MAX ){
-                    printf("%d  ",dist[i][j] + grid[i][j].degree);
-                }else{
-                    printf("%s  ","!");
-                }
-                
-                if ( dist[i][j] + grid[i][j].degree > defaultburn && dist[i][j] != INT_MAX){
-                    defaultburn = dist[i][j] + grid[i][j].degree;
-                }
-            }
-            printf("\n");*/
             return defaultburn-1;
         }
         
@@ -213,4 +197,25 @@ int burn_predict(Element** grid,int height, int width, int srcH,int srcW ) {
     Node src = creeNode(srcH, srcW);
     Node dest = creeNode(0, 0);
     return dijkstra(grid, height, width, src, dest, 'B');
+}
+
+void menu_fire_predict(Element** grid,int height, int width) {
+    
+    int bestFire = INT_MAX;
+    Node bestF = creeNode(0,0);
+
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            if ( grid[i][j].degree != 0){
+                int res = burn_predict(grid, height, width, i, j);
+                printf("(%d %d) %d\n",i, j,res);
+                if ( res < bestFire){
+                    bestFire = res;
+                    bestF = creeNode(i,j);
+                }
+            }
+        }
+    }
+    printf("Le meilleur emplacement pour un point de feu est (%d %d).\n",bestF.row,bestF.col);
+
 }

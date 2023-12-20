@@ -15,5 +15,5 @@ void menu_dijkstra(Element** grid,int height, int width) ;
 void menu_burn_predict(Element** grid,int height, int width);
 int burn_predict(Element** grid,int height, int width, int srcH,int srcW );
 void display_way(Element** matrix, size_t width, size_t height, Node* pre, Node dest);
-
+void menu_fire_predict(Element** grid,int height, int width);
 #endif
