@@ -22,18 +22,18 @@ int isValid(int row, int col, int height,int width) {
 }
 
 // Algo de dijkstra
-void dijkstra(Element** grid,int height, int width, Node src, Node dest, char mode) {
+int dijkstra(Element** grid,int height, int width, Node src, Node dest, char mode) {
     int** dist = NULL;
     dist = ( int **) malloc(height * sizeof( int*));
     if(dist == NULL) {
-        return;
+        return -1;
     }
     for(int ligne = 0;ligne < height;ligne++) {
         int* line = NULL;
         line = (int*) malloc(width * sizeof(int));
         if(line == NULL) {
             free(dist);
-            return;
+            return -1;
         }
         *(dist + ligne) = line;
     }
@@ -43,14 +43,14 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest, char mo
     int** vu = NULL;
     vu = ( int **) malloc(height * sizeof( int*));
     if(vu == NULL) {
-        return;
+        return -1;
     }
     for(int ligne = 0;ligne < height;ligne++) {
         int* line = NULL;
         line = (int*) malloc(width * sizeof(int));
         if(line == NULL) {
             free(vu);
-            return;
+            return -1;
         }
         *(vu + ligne) = line;
     }
@@ -70,8 +70,7 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest, char mo
     // Toute les distances a max et les vistes a 0
     dist[src.row][src.col] = 0;
     // dist de src a src =0
-
-    //
+    
     int defaultburn = grid[src.row][src.col].degree;
 
     for (int count = 0; count < height * width - 1; count++){
@@ -106,7 +105,26 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest, char mo
             }
         }
     }
-    if (mode == 'B') printf("La carte sera totalement au brulée au bout de %d itération.\n",defaultburn-1);
+    if (mode == 'B'){
+        /*
+        printf("La carte sera totalement au brulée au bout de %d itération.\n",defaultburn-1);
+        
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if ( dist[i][j] != INT_MAX ){
+                    printf("%d  ",dist[i][j] + grid[i][j].degree);
+                }else{
+                    printf("%s  ","!");
+                }
+                
+                if ( dist[i][j] + grid[i][j].degree > defaultburn && dist[i][j] != INT_MAX){
+                    defaultburn = dist[i][j] + grid[i][j].degree;
+                }
+            }
+            printf("\n");*/
+            return defaultburn-1;
+        }
+        
     else{
         if (dist[dest.row][dest.col] != INT_MAX){
             printf("Points du plus court chemin entre (%d, %d) et (%d, %d):\n", dest.row, dest.col, src.row, src.col);
@@ -118,7 +136,7 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest, char mo
         }
 
     }
-
+    return 0;
     free(dist);
     free(vu);
     free(pre);
@@ -178,7 +196,7 @@ void display_way(Element** matrix, size_t width, size_t height, Node* pre, Node 
     free(chemin);
 }
 
-void burn_predict(Element** grid,int height, int width) {
+void menu_burn_predict(Element** grid,int height, int width) {
     int srcH, srcW;
     printf("Votre grille actuel est :\n");
     displayMatrix(grid, width, height);
@@ -188,8 +206,11 @@ void burn_predict(Element** grid,int height, int width) {
         scanf("%d %d", &srcH, &srcW);
     } while(srcH < 0 || srcH >= height || srcW < 0 || srcW >= width);
 
+    printf("La carte sera totalement au brulée au bout de %d itération.\n",burn_predict(grid, height, width, srcH, srcW));
+}
+
+int burn_predict(Element** grid,int height, int width, int srcH,int srcW ) {
     Node src = creeNode(srcH, srcW);
     Node dest = creeNode(0, 0);
-    
-    dijkstra(grid, height, width, src, dest, 'B');
+    return dijkstra(grid, height, width, src, dest, 'B');
 }

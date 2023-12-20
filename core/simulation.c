@@ -135,7 +135,7 @@ int userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPoi
       save_grid(forestMatrix, height, width);
       break;
     case 7:
-      burn_predict(forestMatrix, height, width);
+      menu_burn_predict(forestMatrix, height, width);
       break;
     case 8:
       printf("Etes-vous sur de vouloir quitter la partie ? (y/N) ");
