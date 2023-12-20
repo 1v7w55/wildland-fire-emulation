@@ -202,16 +202,16 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
       push(forestMatrix, width, height, listPointsOnFire, *pointIndex);
     }
 
-      if (newPointsOnFire == 0) {
-        fireSpreadCompleted = true;
-        *displayMenu=true;
-        for (size_t i = 0; i < *pointIndex; i++) {
-          if (forestMatrix[listPointsOnFire[i].y][listPointsOnFire[i].x].degree > 0) {
-            newPointsOnFire++;
-            fireSpreadCompleted = false;
-          }
+    if (newPointsOnFire == 0) {
+      fireSpreadCompleted = true;
+      *displayMenu=true;
+      for (size_t i = 0; i < *pointIndex; i++) {
+        if (forestMatrix[listPointsOnFire[i].y][listPointsOnFire[i].x].degree > 0) {
+          newPointsOnFire++;
+          fireSpreadCompleted = false;
         }
       }
+    }
   } while (!fireSpreadCompleted || userChoice != 7);
 }
 
