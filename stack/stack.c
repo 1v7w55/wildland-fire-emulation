@@ -47,6 +47,7 @@ void pop(Element ***map, size_t width, size_t height, Point* listPointsOnFire, s
     memcpy(listPointsOnFire, toPop->tabCoordFeu, toPop->nbFlames * sizeof(Point));
     *pointIndex = toPop->nbFlames;
 
+<<<<<<< HEAD
 	/*
 	if (fireSpreadStep > 0) {
 		printf("a");
@@ -54,6 +55,8 @@ void pop(Element ***map, size_t width, size_t height, Point* listPointsOnFire, s
 		}*/
     //fireSpreadStep = toPop->iteration;
 
+=======
+>>>>>>> c6d20be4fe2409834019bedc9448c041feb0631f
     free(toPop->adresseCarte);
     free(toPop->tabCoordFeu);
     free(toPop);
