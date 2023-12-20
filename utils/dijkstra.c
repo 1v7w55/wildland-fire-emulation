@@ -208,7 +208,7 @@ void menu_fire_predict(Element** grid,int height, int width) {
         for (int j = 0; j < width; j++) {
             if ( grid[i][j].degree != 0){
                 int res = burn_predict(grid, height, width, i, j);
-                printf("(%d %d) %d\n",i, j,res);
+                //printf("(%d %d) %d\n",i, j,res);
                 if ( res < bestFire){
                     bestFire = res;
                     bestF = creeNode(i,j);
