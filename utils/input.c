@@ -127,14 +127,6 @@ int createElementArray(){
     free(reader);
   }
   printf("\n");
-  size_t pointIndex = 0;
-  do {
-    getRandomPosition(&randomX, &randomY, width, height);
-  } while (forestMatrix[randomY][randomX].degree == 0);
-
-  listPointsOnFire[pointIndex].x = randomX;
-  listPointsOnFire[pointIndex].y = randomY;
-  pointIndex++;
 
   fireSpreadStep=0;
   displayMatrix(forestMatrix, width, height);

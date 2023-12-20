@@ -70,7 +70,6 @@ void loadGrid() {
     }
 
     size_t pointIndex = 0;
-    size_t randomX, randomY;
     do {
       getRandomPosition(&randomX, &randomY, width, height);
     } while (forestMatrix[randomY][randomX].degree == 0);
