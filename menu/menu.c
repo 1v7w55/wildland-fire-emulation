@@ -77,7 +77,7 @@ void loadGrid() {
     pointIndex++;
 
     fireSpreadStep=0;
-    displayMatrix(forestMatrix, width, height);
+    displayMatrix(forestMatrix);
     displayStep(fireSpreadStep);
 
     push(forestMatrix, width, height, listPointsOnFire, pointIndex);

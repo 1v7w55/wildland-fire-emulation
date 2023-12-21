@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-void displayMatrix(Element** matrix, size_t width, size_t height);
+void displayMatrix(Element** matrix);
 void displayStep(size_t fireSpreadStep);
 void initializeMatrix(Element** matrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex);
 void getRandomPosition(size_t* randomX, size_t* randomY, size_t width, size_t height);
