@@ -129,7 +129,7 @@ int createElementArray(){
 
   fireSpreadStep=0;
   displayMatrix(forestMatrix);
-  displayStep(fireSpreadStep);
+  displayStep();
 
   push(forestMatrix, width, height, listPointsOnFire, pointIndex);
   bool displayMenu = true;

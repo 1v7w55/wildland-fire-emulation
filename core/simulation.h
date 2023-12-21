@@ -6,9 +6,9 @@
 #include <stdbool.h>
 
 void displayMatrix(Element** matrix);
-void displayStep(size_t fireSpreadStep);
-void initializeMatrix(Element** matrix, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex);
-void getRandomPosition(size_t* randomX, size_t* randomY, size_t width, size_t height);
+void displayStep();
+void initializeMatrix(Element** matrix);
+void getRandomPosition();
 void setFire(int randomX, int randomY, size_t width, size_t height, Element** forestMatrix, Point* listPointsOnFire, size_t* pointIndex);
 int randomForestCreation();
 void modifyGridElement(Element** forestMatrix, size_t width, size_t heigh,  Point* listPointsOnFire, size_t* pointIndex);
