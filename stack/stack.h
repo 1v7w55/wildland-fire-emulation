@@ -12,8 +12,6 @@ typedef struct stack {
     struct stack *prec;
 } stack;
 
-extern stack *forestStack;
-
 void push(Element **map, size_t width, size_t height, Point* listPointsOnFire, size_t pointIndex);
 void pop(Element ***map, size_t width, size_t height, Point* listPointsOnFire, size_t* pointIndex);
 void freeStackElement(stack *element, size_t height);

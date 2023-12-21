@@ -1,7 +1,7 @@
 #ifndef DIJKSTRA_H
 #define DIJKSTRA_H
 
-#include "../core/forest.h"
+#include "../../core/forest.h"
 #include <stddef.h>
 
 typedef struct {

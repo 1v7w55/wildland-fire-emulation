@@ -13,20 +13,6 @@
 #include "./config/global.h"
 #include "./config/error.h"
 
-const size_t MAX_WIDTH = 10;
-const size_t MIN_WIDTH = 4;
-const size_t MAX_HEIGHT = 10;
-const size_t MIN_HEIGHT = 4;
-
-size_t gridWidth, gridHeight;
-size_t pointIndex, fireSpreadStep;
-size_t randomX, randomY;
-
-bool fireSpreadCompleted = false;
-bool hasUserRolledBack = false;
-const char SPACER[] = "\t";
-const char ERROR_MEMORY[] = "Memory allocation failed.\n";
-
 void displayLogo() {
     printf("\n");
     printf("██╗    ██╗██╗██╗     ██████╗ ██╗      █████╗ ███╗   ██╗██████╗     ███████╗██╗██████╗ ███████╗\n");
@@ -37,7 +23,7 @@ void displayLogo() {
     printf(" ╚══╝╚══╝ ╚═╝╚══════╝╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝     ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝\n");
 }
 
-void afficherBienvenue() {
+void displayTextMenu() {
     printf("╔═════════════════════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║  Bienvenue sur notre projet d'émulation d'incendie, \"Wildland Fire Emulation\".              ║\n");
     printf("║  Ce projet consiste à simuler la propagation d'un incendie au sein d'un milieu forestier,   ║\n");
@@ -50,7 +36,7 @@ void afficherBienvenue() {
 int main() {
     srand(time(NULL)); 
     displayLogo();
-    afficherBienvenue();
+    displayTextMenu();
     menu();
     return 0;
 }

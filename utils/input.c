@@ -90,7 +90,6 @@ int createElementArray(){
   int height, width;
   printf("Tapez ou collez les dimensions avec la longueur espacent la largeur.\nVous pouvez vous inspirer des exemples dans le dossier saves.\n");
   scanf("%d %d",&height,&width);
-  //printf("\n");
   //Initialize a pointer pointer
   Element** forestMatrix = NULL;
   //Allocate the necessary memory to it
@@ -127,18 +126,10 @@ int createElementArray(){
     free(reader);
   }
   printf("\n");
-  size_t pointIndex = 0;
-  do {
-    getRandomPosition(&randomX, &randomY, width, height);
-  } while (forestMatrix[randomY][randomX].degree == 0);
-
-  listPointsOnFire[pointIndex].x = randomX;
-  listPointsOnFire[pointIndex].y = randomY;
-  pointIndex++;
 
   fireSpreadStep=0;
-  displayMatrix(forestMatrix, width, height);
-  displayStep(fireSpreadStep);
+  displayMatrix(forestMatrix);
+  displayStep();
 
   push(forestMatrix, width, height, listPointsOnFire, pointIndex);
   bool displayMenu = true;

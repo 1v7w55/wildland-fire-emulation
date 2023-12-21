@@ -1,8 +1,8 @@
 #include "dijkstra.h"
-#include "../core/simulation.h"
-#include "../utils/input.h"
-#include "../config/global.h"
-#include "color.h"
+#include "../../core/simulation.h"
+#include "../../utils/input.h"
+#include "../../config/global.h"
+#include "../../utils/color.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,7 +39,6 @@ int dijkstra(Element** grid,int height, int width, Node src, Node dest, char mod
     }
     
     // Tableau noeud vu
-
     int** vu = NULL;
     vu = ( int **) malloc(height * sizeof( int*));
     if(vu == NULL) {
@@ -130,7 +129,7 @@ void menu_dijkstra(Element** grid,int height, int width) {
 
     int srcH, srcW, destH, destW;
     printf("Votre grille actuel est :\n");
-    displayMatrix(grid, width, height);
+    displayMatrix(grid);
 
     do {
         printf("Quel sont les coordonnées du premier point ? (Sous la forme \"X Y\")\n");
@@ -182,7 +181,7 @@ void display_way(Element** matrix, size_t width, size_t height, Node* pre, Node 
 void menu_burn_predict(Element** grid,int height, int width) {
     int srcH, srcW;
     printf("Votre grille actuel est :\n");
-    displayMatrix(grid, width, height);
+    displayMatrix(grid);
 
     do {
         printf("Quel sont les coordonnées du premier point de feu? (Sous la forme \"X Y\")\n");
