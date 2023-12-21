@@ -1,11 +1,11 @@
 #include "../core/simulation.h"
 #include <stdio.h>
-#include<unistd.h> 
+#include <unistd.h> 
 #define MAX_STR 100
 
 void save_grid(Element** matrix,int height, int width){
     char nomFichier [MAX_STR];
-    printf("Nom de la sauvegarede :");
+    printf("Nom de la sauvegarde :");
     scanf("%s",nomFichier);
     if (chdir("./saves") != 0) perror("chdir() to /saves failed"); 
     FILE *fichier = fopen(nomFichier, "w");
