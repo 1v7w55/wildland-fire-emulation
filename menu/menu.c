@@ -59,7 +59,7 @@ void loadGrid() {
   scanf("%s", filename);
 
   Element** forestMatrix = loadGridFromFile(filename, &height, &width);
-  if (forestMatrix != NULL) {
+    if (forestMatrix != NULL) {
     Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * height * width);
     if (!listPointsOnFire) {
       fprintf(stderr, "%s", ERROR_MEMORY);
