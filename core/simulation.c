@@ -187,6 +187,9 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
         isFireInitialized = true;
         displayStep(fireSpreadStep);
         displayMatrix(forestMatrix, width, height);
+        if (*displayMenu) {
+          userChoice = userMenu(forestMatrix, width, height, listPointsOnFire, pointIndex, displayMenu, &forestStack);
+        }
       }
 
       if (isFireInitialized || userChoice == 5) {
