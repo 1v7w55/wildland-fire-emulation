@@ -30,16 +30,6 @@ void displayMatrix(Element** matrix) {
       printf("%c", matrix[i][j].symbol);
       resetColor();
     }
-    // DEBUG ONLY
-    printf("%s", SPACER);
-    for (size_t j = 0; j < gridWidth; j++) {
-      printf("%d", matrix[i][j].degree);
-    }
-    printf("%s", SPACER);
-    for (size_t j = 0; j < gridWidth; j++) {
-      printf("%d", matrix[i][j].state);
-    }
-    // END DEBUG
     printf("\n");
   }
   printf("\n");
