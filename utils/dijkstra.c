@@ -106,9 +106,8 @@ int dijkstra(Element** grid,int height, int width, Node src, Node dest, char mod
         }
     }
     if (mode == 'B'){
-            return defaultburn-1;
-        }
-        
+        return defaultburn-1;
+    }
     else{
         if (dist[dest.row][dest.col] != INT_MAX){
             printf("Points du plus court chemin entre (%d, %d) et (%d, %d):\n", dest.row, dest.col, src.row, src.col);
@@ -212,7 +211,6 @@ void menu_fire_predict(Element** grid,int height, int width) {
         for (int j = 0; j < width; j++) {
             if ( grid[i][j].degree != 0){
                 int res = burn_predict(grid, height, width, i, j);
-                //printf("(%d %d) %d\n",i, j,res);
                 if ( res < shortFire){
                     shortFire = res;
                     shortF = creeNode(i,j);
@@ -226,5 +224,4 @@ void menu_fire_predict(Element** grid,int height, int width) {
     }
     printf("Le meilleur emplacement pour un point de feu qui s'éteint le plus vite est (%d %d).\n",shortF.row,shortF.col);
     printf("Le meilleur emplacement pour un point de feu qui s'éteint le plus lentement est (%d %d).\n",bestF.row,bestF.col);
-
 }
