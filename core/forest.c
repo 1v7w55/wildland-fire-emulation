@@ -12,28 +12,28 @@ Element ash = { 'A', '-', 1, 0 };
 Element extinctAsh = { 'E', '@', 0, 0 };
 
 Element detectionElement(char symbol) {
-switch (symbol) {
-  case '+':
-    return ground;
-  case '*':
-    return tree;
-  case ' ':
-    return leaf;
-  case '#':
-    return rock;
-  case 'x':
-    return herb;
-  case '/':
-    return water;
-  case '-':
-    return ash;
-  case '@':
-    return extinctAsh; 
-  default:
+  switch (symbol) {
+    case '+':
+      return ground;
+    case '*':
+      return tree;
+    case ' ':
+      return leaf;
+    case '#':
+      return rock;
+    case 'x':
+      return herb;
+    case '/':
+      return water;
+    case '-':
+      return ash;
+    case '@':
+      return extinctAsh; 
+    default:
       printf("Le caractère %c est interdit.\n", symbol);
       Element error = { '!', '!', 0, 0 };
       return error;
-}
+  }
 }
 
 // Element return based on the element in the enum

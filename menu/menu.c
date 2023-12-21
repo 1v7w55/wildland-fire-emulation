@@ -113,7 +113,7 @@ void chooseOption() {
         loadGrid();
         return;
       case 2:
-        createElementArray();
+        fromTerminal();
         return;
       default:
         printf("Choix invalide. Veuillez choisir un mode de jeu valide.\n");
