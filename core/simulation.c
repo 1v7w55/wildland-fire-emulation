@@ -95,9 +95,9 @@ int userMenu(Element** forestMatrix, size_t width, size_t height, Point* listPoi
   printf("2. Modifier la grille\n");
   printf("3. Revenir en arrière\n");
   printf("4. Trouver la distance entre deux points\n");
-  printf("5. Aller directement à la fin de la propagation du feu.\n");
-  printf("6. Sauvgarder la partie dans un fichier.\n");
-  printf("7. Calculer le nombre d'itération néssécaire\n");
+  printf("5. Aller directement à la fin de la propagation du feu\n");
+  printf("6. Sauvgarder la partie dans un fichier\n");
+  printf("7. Calculer le nombre d'itération nécessaire\n");
   printf("8. Trouver le meilleur point de départ de l'incendie\n");
   printf("9. Quitter la simulation\n");
   scanf("%d", &userChoice);

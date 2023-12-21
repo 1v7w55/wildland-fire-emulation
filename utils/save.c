@@ -7,7 +7,7 @@ void save_grid(Element** matrix,int height, int width){
     char nomFichier [MAX_STR];
     printf("Nom de la sauvegarede :");
     scanf("%s",nomFichier);
-    if (chdir("./saves") != 0) perror("chdir() to /save failed"); 
+    if (chdir("./saves") != 0) perror("chdir() to /saves failed"); 
     FILE *fichier = fopen(nomFichier, "w");
     if (fichier != NULL) {
       fprintf(fichier, "%d %d\n", height, width);
