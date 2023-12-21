@@ -5,12 +5,10 @@
 #include "../core/simulation.h"
 #include "../stack/stack.h"
 #include "../config/global.h"
-#include "../utils/memory.h"
+#include "../utils/memory/memory.h"
 #include "../utils/input.h"
-#include "../utils/dijkstra.h"
+#include "../utils/dijkstra/dijkstra.h"
 #include "menu.h"
-
-const size_t MAX_FILENAME_LENGTH = 100;
 
 //Allows you to display the menu before the start of the game
 void menu() {

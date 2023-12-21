@@ -4,9 +4,6 @@
 #include <string.h>
 #include <stdio.h>
 
-stack *forestStack = NULL;
-size_t iterationCounter;
-
 void push(Element **map, size_t width, size_t height, Point* listPointsOnFire, size_t pointIndex) {
 	stack *newElement = malloc(sizeof(stack));
 	if (!newElement) {

@@ -90,7 +90,6 @@ int createElementArray(){
   int height, width;
   printf("Tapez ou collez les dimensions avec la longueur espacent la largeur.\nVous pouvez vous inspirer des exemples dans le dossier saves.\n");
   scanf("%d %d",&height,&width);
-  //printf("\n");
   //Initialize a pointer pointer
   Element** forestMatrix = NULL;
   //Allocate the necessary memory to it

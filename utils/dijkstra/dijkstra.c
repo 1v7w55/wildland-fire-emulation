@@ -1,8 +1,8 @@
 #include "dijkstra.h"
-#include "../core/simulation.h"
-#include "../utils/input.h"
-#include "../config/global.h"
-#include "color.h"
+#include "../../core/simulation.h"
+#include "../../utils/input.h"
+#include "../../config/global.h"
+#include "../../utils/color.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,7 +39,6 @@ void dijkstra(Element** grid,int height, int width, Node src, Node dest) {
     }
     
     // Tableau noeud vu
-
     int** vu = NULL;
     vu = ( int **) malloc(height * sizeof( int*));
     if(vu == NULL) {

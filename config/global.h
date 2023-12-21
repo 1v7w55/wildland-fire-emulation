@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include "../core/forest.h"
+#include "../stack/stack.h"
 
 extern const size_t MAX_WIDTH;
 extern const size_t MIN_WIDTH;
@@ -13,6 +14,10 @@ extern const size_t MIN_HEIGHT;
 extern size_t gridWidth, gridHeight;
 extern size_t pointIndex, fireSpreadStep;
 extern size_t randomX, randomY;
+
+extern const size_t MAX_FILENAME_LENGTH;
+
+extern stack *forestStack;
 
 extern size_t iterationCounter;
 extern Element** forestMatrix;
