@@ -112,6 +112,7 @@ int dijkstra(Element** grid,int height, int width, Node src, Node dest, char mod
             printf("Points du plus court chemin entre (%d, %d) et (%d, %d):\n", dest.row, dest.col, src.row, src.col);
             display_way(grid,height, width,pre,dest);
             printf("\nLa distance minimale depuis (%d, %d) à (%d, %d) est : %d\n", dest.row, dest.col,src.row, src.col, dist[dest.row][dest.col]);
+            printf("Il faudra %d étapes pour que la case soit toalement consumé\n", dist[dest.row][dest.col] + grid[dest.row][dest.col].degree);
         }
         else{
             printf("\nIl est impossible de rejoindre les 2 points avec un chemin de feu\n");
