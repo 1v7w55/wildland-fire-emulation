@@ -166,8 +166,8 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
               pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
               hasUserRolledBack = true;
             }
-          displayStep();
           displayMatrix(forestMatrix);
+          displayStep();
         } else {
           pop(&forestMatrix, width, height, listPointsOnFire, pointIndex);
         }
@@ -183,8 +183,8 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
 
         initFire(forestMatrix, width, height, listPointsOnFire, pointIndex);
         isFireInitialized = true;
-        displayStep();
         displayMatrix(forestMatrix);
+        displayStep();
         if (*displayMenu) {
           userChoice = userMenu(forestMatrix, width, height, listPointsOnFire, pointIndex, displayMenu, &forestStack);
         }
@@ -204,8 +204,8 @@ void processFireSpread(Element** forestMatrix, size_t width, size_t height, Poin
         }
         checkExtinctAsh(forestMatrix, listPointsOnFire, pointIndex);
         fireSpreadStep++;
-        displayStep();
         displayMatrix(forestMatrix);
+        displayStep();
         push(forestMatrix, width, height, listPointsOnFire, *pointIndex);
       }
     }
@@ -264,9 +264,8 @@ int randomForestCreation() {
   listPointsOnFire[pointIndex].y = randomY;
   pointIndex++;
   fireSpreadStep = 0;
-  displayStep();
   displayMatrix(forestMatrix);
-
+  displayStep();
 
   push(forestMatrix, gridWidth, gridHeight, listPointsOnFire, pointIndex);
 
