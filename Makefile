@@ -1,6 +1,6 @@
 TARGET = wildland
 
-SOURCES = main.c menu/menu.c core/forest.c core/simulation.c utils/input.c utils/display.c utils/memory.c utils/dijkstra.c stack/stack.c utils/save.c
+SOURCES = main.c menu/menu.c core/forest.c core/simulation.c utils/input.c utils/display.c utils/memory/memory.c utils/dijkstra/dijkstra.c stack/stack.c utils/save.c config/global.c
 
 CC = gcc
 

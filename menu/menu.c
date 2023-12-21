@@ -5,12 +5,10 @@
 #include "../core/simulation.h"
 #include "../stack/stack.h"
 #include "../config/global.h"
-#include "../utils/memory.h"
+#include "../utils/memory/memory.h"
 #include "../utils/input.h"
-#include "../utils/dijkstra.h"
+#include "../utils/dijkstra/dijkstra.h"
 #include "menu.h"
-
-const size_t MAX_FILENAME_LENGTH = 100;
 
 //Allows you to display the menu before the start of the game
 void menu() {
@@ -61,7 +59,7 @@ void loadGrid() {
   scanf("%s", filename);
 
   Element** forestMatrix = loadGridFromFile(filename, &height, &width);
-  if (forestMatrix != NULL) {
+    if (forestMatrix != NULL) {
     Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * height * width);
     if (!listPointsOnFire) {
       fprintf(stderr, "%s", ERROR_MEMORY);
@@ -70,9 +68,8 @@ void loadGrid() {
     }
 
     size_t pointIndex = 0;
-    size_t randomX, randomY;
     do {
-      getRandomPosition(&randomX, &randomY, width, height);
+      getRandomPosition();
     } while (forestMatrix[randomY][randomX].degree == 0);
 
     listPointsOnFire[pointIndex].x = randomX;
@@ -80,8 +77,8 @@ void loadGrid() {
     pointIndex++;
 
     fireSpreadStep=0;
-    displayMatrix(forestMatrix, width, height);
-    displayStep(fireSpreadStep);
+    displayMatrix(forestMatrix);
+    displayStep();
 
     push(forestMatrix, width, height, listPointsOnFire, pointIndex);
     bool displayMenu = true;
@@ -116,7 +113,7 @@ void chooseOption() {
         loadGrid();
         return;
       case 2:
-        createElementArray();
+        fromTerminal();
         return;
       default:
         printf("Choix invalide. Veuillez choisir un mode de jeu valide.\n");

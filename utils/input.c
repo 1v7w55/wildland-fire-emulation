@@ -3,6 +3,8 @@
 #include "../utils/input.h"
 #include "../config/global.h"
 #include "../core/simulation.h"
+#include "../stack/stack.h"
+#include "./memory/memory.h"
 #include "display.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,35 +44,34 @@ Element** loadGridFromFile(const char* filename, int* outHeight, int* outWidth) 
     return NULL;
   }
 
-  int height, width;
-  if (fscanf(file, "%d %d\n", &height, &width) != 2) {
+  if (fscanf(file, "%ld %ld\n", &gridHeight, &gridWidth) != 2) {
     printf("Erreur lors de la lecture des dimensions du fichier.\n");
     fclose(file);
     return NULL;
   }
 
-  Element **grid = (Element **)malloc(height * sizeof(Element *));
+  Element **grid = (Element **)malloc(gridHeight * sizeof(Element *));
   if (grid == NULL) {
     fclose(file);
     return NULL;
   }
 
-  for (int i = 0; i < height; i++) {
-    char *line = malloc((width + 2) * sizeof(char));
+  for (int i = 0; i < gridHeight; i++) {
+    char *line = malloc((gridWidth + 2) * sizeof(char));
     if (line == NULL) {
       fclose(file);
       freeGrid(grid, i);
       return NULL;
     }
 
-    if (fgets(line, width + 2, file) == NULL) {
+    if (fgets(line, gridWidth + 2, file) == NULL) {
       fclose(file);
       freeGrid(grid, i);
       free(line);
       return NULL;
     }
     line[strcspn(line, "\n")] = 0;
-    grid[i] = parseLine(line, width);
+    grid[i] = parseLine(line, gridWidth);
     if (grid[i] == NULL) {
       fclose(file);
       freeGrid(grid, i);
@@ -80,51 +81,99 @@ Element** loadGridFromFile(const char* filename, int* outHeight, int* outWidth) 
     free(line);
   }
   fclose(file);
-  *outHeight = height;
-  *outWidth = width;
+  *outHeight = gridHeight;
+  *outWidth = gridWidth;
   return grid;
 }
 
-int createElementArray(){
-  int height, width;
-  printf("Tapez ou collez les dimensions avec la longueur espacent la largeur.\nVous pouvez vous inspirer des exemples dans le dossier saves.\n");
-  scanf("%d %d",&height,&width);
-  //printf("\n");
-  //Initialize a pointer pointer
-  Element** tab = NULL;
-  //Allocate the necessary memory to it
-  tab = ( Element **) malloc(height * sizeof( Element*));
-  if(tab == NULL) {
-    return -1;
+void processForestMatrix(Element** forestMatrix) {
+  size_t pointIndex = 0;
+  Point* listPointsOnFire = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
+  if (!listPointsOnFire) {
+    fprintf(stderr, "Erreur d'allocation mémoire pour les points de feu.\n");
+    freeMatrix(forestMatrix, gridHeight);
+    return;
   }
-  for(int ligne = 0;ligne < height;ligne++) {
-    Element* line = NULL;
-    line = (Element*) malloc(width * sizeof(Element));
-    if(line == NULL) {
-      free(tab);
-      return -2;
-    }
-    *(tab + ligne) = line;
-    char * reader = NULL;
-    reader = (char*) malloc((width + 1) * sizeof(char*));
-    //Add one to the width because of the last char of every string '\0'
-    if(reader == NULL) {
-      free(tab);
-      return -3;
-    }
-    fgets(reader, width, stdin);
-    scanf("%s", reader);
 
-    for (int colonne = 0;colonne < width;colonne++){
-      Element character = detectionElement(*(reader + colonne));
-      //check the error code
-      if (character.symbol != '!'){
-        tab[ligne][colonne] = character ;
-      }
-    }
-    free(reader);
+  size_t randomX = rand() % gridWidth;
+  size_t randomY = rand() % gridHeight;
+  listPointsOnFire[pointIndex].x = randomX;
+  listPointsOnFire[pointIndex].y = randomY;
+  pointIndex++;
+
+  displayMatrix(forestMatrix);
+
+  bool displayMenu = true;
+  fireSpreadStep = 0;
+  processFireSpread(forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex, &displayMenu);
+
+  while (forestStack != NULL) {
+    pop(&forestMatrix, gridWidth, gridHeight, listPointsOnFire, &pointIndex);
+  } 
+
+  free(listPointsOnFire);
+  freeMatrix(forestMatrix, gridHeight);
+}
+
+void fromTerminal() {
+  forestMatrix = createElementArray();
+  if (forestMatrix != NULL) {
+    processForestMatrix(forestMatrix);
   }
-  return 0;
+}
+
+Element** createElementArray() {
+  printf("Entrez les dimensions (longueur largeur) suivies de la grille :\n");
+
+  if (scanf("%zu %zu", &gridHeight, &gridWidth) != 2) {
+    fprintf(stderr, "Erreur de lecture des dimensions.\n");
+    return NULL;
+  }
+  getchar(); 
+
+  Element **tab = (Element **) malloc(gridHeight * sizeof(Element *));
+  if (tab == NULL) {
+    fprintf(stderr, "Erreur d'allocation mémoire.\n");
+    return NULL;
+  }
+
+  char *lineBuffer = (char *) malloc((gridWidth + 2) * sizeof(char));
+  if (lineBuffer == NULL) {
+    free(tab);
+    fprintf(stderr, "Erreur d'allocation mémoire pour lineBuffer.\n");
+    return NULL;
+  }
+
+  for (size_t ligne = 0; ligne < gridHeight; ligne++) {
+    if (fgets(lineBuffer, gridWidth + 2, stdin) == NULL) {
+      free(lineBuffer);
+      for (size_t i = 0; i < ligne; i++) {
+        free(tab[i]);
+      }
+      free(tab);
+      fprintf(stderr, "Erreur de lecture de la grille.\n");
+      return NULL;
+    }
+
+    tab[ligne] = (Element *) malloc(gridWidth * sizeof(Element));
+    if (tab[ligne] == NULL) {
+      free(lineBuffer);
+      for (size_t i = 0; i < ligne; i++) {
+        free(tab[i]);
+      }
+      free(tab);
+      fprintf(stderr, "Erreur d'allocation mémoire pour une ligne de la grille.\n");
+      return NULL;
+    }
+
+    for (size_t colonne = 0; colonne < gridWidth; colonne++) {
+      tab[ligne][colonne] = detectionElement(lineBuffer[colonne]);
+    }
+  }
+
+  free(lineBuffer);
+  printf("\n");
+  return tab;
 }
 
 int manualForestCreation(){
@@ -168,7 +217,7 @@ int manualForestCreation(){
   Point* points = (Point*)malloc(sizeof(Point) * gridHeight * gridWidth);
   setFire(0, 0, gridWidth, gridHeight, forestMatrix, points, &pointIndex);
   // To do: change var declaration because it's useless
-  bool displayMenu = true;
+bool displayMenu = true;
   fireSpreadStep = 0;
   processFireSpread(forestMatrix, gridWidth, gridHeight, points, &pointIndex, &displayMenu);
   return 0;
