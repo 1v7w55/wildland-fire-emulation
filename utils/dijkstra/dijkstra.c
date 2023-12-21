@@ -181,7 +181,7 @@ void display_way(Element** matrix, size_t width, size_t height, Node* pre, Node 
 void menu_burn_predict(Element** grid,int height, int width) {
     int srcH, srcW;
     printf("Votre grille actuel est :\n");
-    displayMatrix(grid, width, height);
+    displayMatrix(grid);
 
     do {
         printf("Quel sont les coordonnées du premier point de feu? (Sous la forme \"X Y\")\n");
